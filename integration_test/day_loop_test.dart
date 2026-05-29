@@ -30,11 +30,31 @@ void main() {
   }
 
   /// Hotfix 2026-05-18 (B4): 平日日中は action sheet が出ず、即仕事ロール → 結果ダイアログ。
+  /// Sprint C: 35% の確率で仕事中イベントダイアログが代わりに出る。両経路に対応する。
   Future<void> resolveWorkSlot(WidgetTester tester) async {
     await tester.tap(find.byKey(const ValueKey('home.timelineSlot.日中.tap')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('work.resultDialog.close')));
-    await tester.pumpAndSettle();
+    final workEventChoice = find.byWidgetPredicate((w) {
+      final k = w.key;
+      return k is ValueKey<String> &&
+          k.value.startsWith('workEvent.') &&
+          k.value.endsWith('.choice.0');
+    });
+    if (workEventChoice.evaluate().isNotEmpty) {
+      await tester.tap(workEventChoice.first);
+      await tester.pumpAndSettle();
+      final workEventClose = find.byWidgetPredicate((w) {
+        final k = w.key;
+        return k is ValueKey<String> &&
+            k.value.startsWith('workEvent.') &&
+            k.value.endsWith('.close');
+      });
+      await tester.tap(workEventClose.first);
+      await tester.pumpAndSettle();
+    } else {
+      await tester.tap(find.byKey(const ValueKey('work.resultDialog.close')));
+      await tester.pumpAndSettle();
+    }
   }
 
   Future<void> bootToHome(WidgetTester tester) async {
@@ -96,8 +116,22 @@ void main() {
 
     // 4月4日 になっている
     expect(find.textContaining('4月4日'), findsWidgets);
-    // Hotfix 2026-05-18 (B4): 平日日中は仕事ロール（vitality 変動なし）。
-    // 読書枠は 3 日 × 3 枠 = 9 回 → -2 × 9 = -18 → 80 - 18 = 62/100。
-    expect(find.text('62/100'), findsOneWidget);
+    // Hotfix 2026-05-18 (B4): 平日日中は仕事ロール。読書枠は 3 日 × 3 枠 = 9 回
+    // → -2 × 9 = -18 → 80 - 18 = 62/100 が上限値。
+    // Sprint C: 35% で workEvent が発火し、選択肢 0 では vitality がさらに減る
+    // ことがあるため、厳密値ではなく「62/100 以下」を検証する。
+    final vitalityFinder = find.byWidgetPredicate((w) {
+      if (w is Text) {
+        return RegExp(r'^\d+/100$').hasMatch(w.data ?? '');
+      }
+      return false;
+    });
+    expect(vitalityFinder, findsOneWidget);
+    final vText = tester.widget<Text>(vitalityFinder).data!;
+    final v = int.parse(RegExp(r'^(\d+)/100$').firstMatch(vText)!.group(1)!);
+    expect(v, lessThanOrEqualTo(62),
+        reason: '読書 -2×9 + workEvent 確率減少で 62/100 以下のはず（実測 $vText）');
+    expect(v, greaterThan(0),
+        reason: '3 日プレイで体力が 0 になることは想定外（実測 $vText）');
   });
 }

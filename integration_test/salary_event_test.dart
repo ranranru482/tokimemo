@@ -49,11 +49,31 @@ void main() {
   }
 
   /// Hotfix 2026-05-18 (B4): 確認ダイアログ廃止。日中枠タップで即結果ダイアログ。
+  /// Sprint C: 35% の確率で仕事中イベントダイアログが代わりに出る。両経路に対応する。
   Future<void> resolveWorkSlot(WidgetTester tester) async {
     await tester.tap(find.byKey(const ValueKey('home.timelineSlot.日中.tap')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('work.resultDialog.close')));
-    await tester.pumpAndSettle();
+    final workEventChoice = find.byWidgetPredicate((w) {
+      final k = w.key;
+      return k is ValueKey<String> &&
+          k.value.startsWith('workEvent.') &&
+          k.value.endsWith('.choice.0');
+    });
+    if (workEventChoice.evaluate().isNotEmpty) {
+      await tester.tap(workEventChoice.first);
+      await tester.pumpAndSettle();
+      final workEventClose = find.byWidgetPredicate((w) {
+        final k = w.key;
+        return k is ValueKey<String> &&
+            k.value.startsWith('workEvent.') &&
+            k.value.endsWith('.close');
+      });
+      await tester.tap(workEventClose.first);
+      await tester.pumpAndSettle();
+    } else {
+      await tester.tap(find.byKey(const ValueKey('work.resultDialog.close')));
+      await tester.pumpAndSettle();
+    }
   }
 
   /// 平日か休日かを 4/X の日付から判定（祝日は無し）。

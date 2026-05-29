@@ -36,12 +36,31 @@ void main() {
 
   /// 平日の日中（仕事ミニ判定）を 1 回処理する。Hotfix 2026-05-18 (B4) 以降、
   /// 確認ダイアログは廃止され、日中枠タップで即ロール → 結果ダイアログ 1 つに短縮。
+  /// Sprint C: 35% の確率で仕事中イベントダイアログが代わりに出る。両経路に対応する。
   Future<void> resolveWorkSlot(WidgetTester tester) async {
     await tester.tap(find.byKey(const ValueKey('home.timelineSlot.日中.tap')));
     await tester.pumpAndSettle();
-    // success / failure いずれかの close ボタンを押す
-    await tester.tap(find.byKey(const ValueKey('work.resultDialog.close')));
-    await tester.pumpAndSettle();
+    final workEventChoice = find.byWidgetPredicate((w) {
+      final k = w.key;
+      return k is ValueKey<String> &&
+          k.value.startsWith('workEvent.') &&
+          k.value.endsWith('.choice.0');
+    });
+    if (workEventChoice.evaluate().isNotEmpty) {
+      await tester.tap(workEventChoice.first);
+      await tester.pumpAndSettle();
+      final workEventClose = find.byWidgetPredicate((w) {
+        final k = w.key;
+        return k is ValueKey<String> &&
+            k.value.startsWith('workEvent.') &&
+            k.value.endsWith('.close');
+      });
+      await tester.tap(workEventClose.first);
+      await tester.pumpAndSettle();
+    } else {
+      await tester.tap(find.byKey(const ValueKey('work.resultDialog.close')));
+      await tester.pumpAndSettle();
+    }
   }
 
   /// 1 日を消化（平日：朝/夕方/夜は read、日中は仕事判定）。
