@@ -376,7 +376,7 @@ class _ColoredThumb extends StatelessWidget {
       ),
       child: Center(
         child: Icon(
-          kind == EndingKind.trueEd ? Icons.nightlight_round : Icons.bookmark,
+          _coloredIconFor(kind),
           color: Colors.white,
           size: 36,
           shadows: [
@@ -409,12 +409,46 @@ class _SilhouetteThumb extends StatelessWidget {
       ),
       child: Center(
         child: Icon(
-          Icons.lock_outline,
+          _lockedIconFor(kind),
           color: theme.colorScheme.onSurfaceVariant,
           size: 32,
         ),
       ),
     );
+  }
+}
+
+/// 品質改善フェーズ: 達成済みサムネの ED 種別アイコン。
+/// 既存の `Icons.bookmark` 一辺倒から、種別の雰囲気が伝わる形に分岐。
+IconData _coloredIconFor(EndingKind kind) {
+  switch (kind) {
+    case EndingKind.burnoutEd:
+      return Icons.local_fire_department;
+    case EndingKind.demotionEd:
+      return Icons.trending_down;
+    case EndingKind.akariEd:
+    case EndingKind.utaEd:
+    case EndingKind.toruEd:
+    case EndingKind.sayoEd:
+    case EndingKind.yuiEd:
+      return Icons.favorite;
+    case EndingKind.normalEd:
+      return Icons.self_improvement;
+    case EndingKind.trueEd:
+      return Icons.nightlight_round;
+  }
+}
+
+/// 品質改善フェーズ: 未達成シルエットのアイコン。
+/// バッド系のみ警告色寄りのアイコンに変えて、避けるべき結末が一目で分かるようにする。
+/// 個別/真は神秘性を残したいので `Icons.lock_outline` を維持。
+IconData _lockedIconFor(EndingKind kind) {
+  switch (kind) {
+    case EndingKind.burnoutEd:
+    case EndingKind.demotionEd:
+      return Icons.warning_amber_outlined;
+    default:
+      return Icons.lock_outline;
   }
 }
 

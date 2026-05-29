@@ -111,11 +111,20 @@ class CgView extends StatelessWidget {
 ///
 /// Task #5: [onTap] が指定されていれば InkWell でラップしてタップ可能にする。
 /// アルバム画面のヒントダイアログ用に使われる。後方互換のため省略可能。
+/// 品質改善フェーズ: [iconOverride] でカテゴリ別のアウトラインアイコンに差替え可能。
 class CgLockedTile extends StatelessWidget {
-  const CgLockedTile({super.key, required this.cgKey, this.onTap});
+  const CgLockedTile({
+    super.key,
+    required this.cgKey,
+    this.onTap,
+    this.iconOverride,
+  });
 
   final String cgKey;
   final VoidCallback? onTap;
+
+  /// カテゴリヒント用のアイコン上書き（null なら `Icons.lock_outline`）。
+  final IconData? iconOverride;
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +138,7 @@ class CgLockedTile extends StatelessWidget {
       ),
       child: Center(
         child: Icon(
-          Icons.lock_outline,
+          iconOverride ?? Icons.lock_outline,
           color: theme.colorScheme.onSurfaceVariant,
           size: 32,
         ),

@@ -540,3 +540,29 @@ Hotfix 本体の UI 変更（B3 チュートリアル / B4 仕事ダイアログ
 - アルバムのフィルタ状態は画面 State のみ（再起動でリセット）。
 - ED 図鑑のアイコンは `Icons.bookmark` 共通（バッドED 専用アイコンは未差別化）。
 - `README.md` は旧 `mugen_siritori` 名のまま（プロジェクトリブランドの取りこぼし）。
+
+## 2026-05-29 追記 (2) — 保全 + 軽い品質改善フェーズ
+
+初回コミット / GitHub push を経た後の軽微改善。機能追加なし。
+
+### 完了
+- `README.md` を `tokimemo` 用に書き換え（旧 `mugen_siritori` リブランドの取りこぼし回収）。
+- `docs/assets_spec.md` に新規 17 CG キーを反映、CG 48 → 65、合計 93 → 110 ファイル、APK サイズ見積りも追従更新。
+- 初回コミット `252018f` を作成し、`origin/main`（`https://github.com/ranranru482/tokimemo.git`）に push 完了。
+- ED 図鑑のサムネアイコンを ED 種別ごとに分岐:
+  - 達成済み: burnout=`local_fire_department` / demotion=`trending_down` / 個別=`favorite` / normal=`self_improvement` / true=`nightlight_round`
+  - 未達成シルエット: バッド系のみ `warning_amber_outlined`、それ以外は `lock_outline` を維持（神秘性確保）
+- アルバム未解放タイルを CG カテゴリ別アウトラインアイコンに差別化:
+  - 共通=`event_note` / 個別=`person_outline` / 告白前夜=`favorite_outline` / 節目=`celebration_outlined`
+  - `CgLockedTile` に optional `iconOverride` を追加（後方互換）
+- アルバム空表示の文言を「該当する CG はありません」→「該当する思い出はまだ集まっていません」に統一（「メモリーアルバム」「まだ見ぬ思い出」のトーンに整合）。
+
+### 検証
+- `flutter analyze`: clean
+- `flutter test`: 435/435 pass 維持
+
+### 残るもの
+- 実機 / エミュレータでの integration test 通し検証。
+- 実アセット投入（音声 14 / 立ち絵 15 / CG 65 / 背景 16）。
+- 仕事中イベントの BGM 切替。
+- アルバムフィルタ状態の永続化（セーブ非対応）。

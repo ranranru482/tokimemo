@@ -95,7 +95,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
               child: entries.isEmpty
                   ? const Center(
                       key: ValueKey('album.empty'),
-                      child: Text('該当する CG はありません'),
+                      child: Text('該当する思い出はまだ集まっていません'),
                     )
                   : GridView.builder(
                       key: const ValueKey('album.grid'),
@@ -113,6 +113,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
                         if (!unlocked) {
                           return CgLockedTile(
                             cgKey: entry.cgKey,
+                            iconOverride:
+                                _categoryLockedIcon(entry.category),
                             onTap: () => _showHintDialog(context, entry),
                           );
                         }
@@ -262,6 +264,21 @@ enum AlbumCharacterFilter {
 
 /// CG の分類。アルバム画面のフィルタとヒント生成に使う。
 enum CgCategory { common, individual, confessionEve, milestone }
+
+/// 品質改善フェーズ: 未解放タイルのカテゴリ別アウトラインアイコン。
+/// `Icons.lock_outline` 一辺倒だった見せ方を、カテゴリの匂いが伝わる形に変える。
+IconData _categoryLockedIcon(CgCategory c) {
+  switch (c) {
+    case CgCategory.common:
+      return Icons.event_note;
+    case CgCategory.individual:
+      return Icons.person_outline;
+    case CgCategory.confessionEve:
+      return Icons.favorite_outline;
+    case CgCategory.milestone:
+      return Icons.celebration_outlined;
+  }
+}
 
 class _AlbumThumbnail extends StatelessWidget {
   const _AlbumThumbnail({required this.entry, required this.onTap});
