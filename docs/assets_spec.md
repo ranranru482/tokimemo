@@ -1,5 +1,9 @@
 # アセット命名規約 — 月と珈琲 (tokimemo)
 
+> ジャンル: **社会人恋愛ADV**（学園ものではない）。世界観は
+> [`world_setting.md`](world_setting.md)、キャラ設定は
+> [`character_profiles.md`](character_profiles.md) を参照。
+
 外部発注・フリー素材投入時のチェックリスト兼ファイル名対応表。
 すべてのキー名は **実コードから抽出** している（手書きの推測は含まない）。
 
@@ -62,7 +66,23 @@
 | yui（槙原 結衣） | `yui_normal.png` | `yui_smile.png` | `yui_troubled.png` |
 
 導入時は `lib/widgets/character_portrait.dart` を `Image.asset` ベースに
-切り替える（現状はテーマカラー + イニシャル擬似描画）。
+切り替える（feat/character-assets で実装済み・未投入時はイニシャル円へフォールバック）。
+
+### 立ち絵キャラ設定（社会人版・正典）
+
+立ち絵生成時の人物像。詳細は [`character_profiles.md`](character_profiles.md)。
+
+| id | 名前 | 年齢 | 職業 | テーマ色 |
+| --- | --- | --- | --- | --- |
+| akari | 七瀬 灯 | 25 | カフェ研究員（商品開発担当） | テラコッタ `#B66E5C` |
+| uta | 久遠 詩 | 27 | 出版社編集者 | モスグリーン `#5E8D7A` |
+| toru | 鴻巣 透 | 26 | スポーツメーカー営業 | インディゴブルー `#4C6B9A` |
+| sayo | 蓮見 紗夜 | 28 | デザイナー | モーブ `#6F4F8C` |
+| yui | 槙原 結衣 | 24 | 楽器店スタッフ | オレンジゴールド `#C97A3F` |
+
+> ⚠️ この年齢/職業は **2026-05-30 確定の新設定**。コード（`character_repository.dart`）は
+> 旧設定のままで差異がある。差異一覧と反映方針は `character_profiles.md` の
+> 「コードとの差異」節を参照（コード反映は別タスク）。
 
 ---
 
