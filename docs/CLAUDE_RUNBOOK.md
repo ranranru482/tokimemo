@@ -68,3 +68,67 @@ flutter test           # 全 pass（件数を記録。現基準 435）
 4. PR作成有無（URL）
 5. 次タスク候補
 6. リスク残件
+
+---
+
+## 次回以降の開発フロー
+
+ハーネス導入（PR #1, 2026-05-30 マージ）以降、すべての変更はこの 1 サイクルで回す。
+**main への直接コミット・push は禁止。例外なく feature branch + PR を経由する。**
+
+### 1 サイクルの手順
+
+```
+ChatGPT が次指示
+        │   ( docs/NEXT_TASK.md を更新 / または指示文を提示 )
+        ▼
+[1] Claude: main を最新化
+        git switch main && git pull --ff-only
+[2] Claude: feature branch 作成
+        git switch -c <種別>/<説明>     例 feat/background-assets, docs/xxx, ci/xxx, fix/xxx
+[3] Claude: 実装（最小差分・既存機能/テスト維持・1 PR=1関心事）
+[4] Claude: ローカル検証
+        flutter pub get && flutter analyze && flutter test   （現基準: analyze clean / 435 pass）
+[5] Claude: push & PR
+        git push -u origin <branch>
+        PR 作成（gh が無ければ REST API で作成）
+        ▼
+[6] GitHub Actions: CI 実行（pub get→analyze→test, Flutter 3.38.9 固定）
+[7] GitHub Actions: Codex Review 実行（PR 差分にコメント / OPENAI_API_KEY 未設定時はスキップ）
+        ▼
+[8] Claude: CI green + Codex Review 対応完了を確認 → 報告フォーマットで報告
+        ▼
+[9] 人間（または管理者）: PR をレビュー承認 → マージ
+        ※ main は branch protection 下。PR レビュー必須。CI を必須チェックに設定済みなら green 必須。
+        ▼
+[10] Claude: マージ後の締め
+        docs/progress.md に成果追記 / docs/NEXT_TASK.md を次タスクへ更新
+        ▼
+ChatGPT が次指示（サイクル先頭へ戻る）
+```
+
+### ブランチ命名規約
+
+| 接頭辞 | 用途 |
+| --- | --- |
+| `feat/` | 機能追加（例: アセット投入 + Image.asset 化） |
+| `fix/` | バグ修正 |
+| `docs/` | ドキュメントのみ |
+| `ci/` | CI / workflow / リポジトリ設定 |
+| `chore/` | 雑務・依存・ハーネス保守 |
+
+### 守るべき不変条件（毎サイクル自己チェック）
+
+- [ ] main に直接コミットしていない（feature branch 上で作業した）。
+- [ ] `lib/` のゲーム機能・セーブ互換・既存テストを壊していない。
+- [ ] secrets / token / key / .env をコミットしていない。
+- [ ] `flutter analyze` clean / `flutter test` 全 pass を維持。
+- [ ] PR を作成し CI green を確認した。
+- [ ] 1 PR = 1 関心事（アセットとハーネスを混ぜない 等）。
+
+### 詰まったときの参照先
+
+- 次に何をやるか → `docs/NEXT_TASK.md`
+- スプリントの起こし方 → `docs/SPRINT_TEMPLATE.md`
+- 仕様 → `docs/spec.md` / アセット → `docs/assets_spec.md` / 投入手順 → `docs/asset_checklist.md`
+- 進捗ログ → `docs/progress.md`
