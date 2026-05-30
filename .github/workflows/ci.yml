@@ -1,0 +1,45 @@
+name: CI
+
+# Flutter の静的解析 + ユニット/ウィジェットテストを PR と feature branch push で実行する。
+# 初回方針:
+#   - integration_test/ は実機/エミュレータ必須のため CI 必須から除外（別途手動 or 専用 workflow）。
+#   - dart format チェックは既存ファイルが未フォーマットのため初回は実行しない。
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - main # main への push は PR 経由のみ。main では二重実行しない。
+
+# 同一ブランチの古い実行はキャンセルして無駄を省く。
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  analyze-and-test:
+    name: analyze + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          # ローカル開発環境（Flutter 3.38.9 / Dart 3.10.8、pubspec sdk: ^3.10.8）に固定。
+          flutter-version: '3.38.9'
+          channel: stable
+          cache: true
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: flutter analyze
+        run: flutter analyze
+
+      - name: flutter test
+        run: flutter test

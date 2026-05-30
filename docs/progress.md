@@ -566,3 +566,23 @@ Hotfix 本体の UI 変更（B3 チュートリアル / B4 仕事ダイアログ
 - 実アセット投入（音声 14 / 立ち絵 15 / CG 65 / 背景 16）。
 - 仕事中イベントの BGM 切替。
 - アルバムフィルタ状態の永続化（セーブ非対応）。
+
+## 2026-05-30 追記 — 半自動開発ハーネス導入フェーズ
+
+ai_keiba 型の半自動開発ハーネスを導入。ゲーム機能・アセットには一切触れていない。
+
+### 完了（ブランチ `chore/dev-harness-bootstrap`）
+- 背景/立ち絵の部分投入手順を `docs/asset_checklist.md` に確定コミット。
+- `.codex/agents/{planner,generator,evaluator}.toml` を Git 管理対象に追加。
+- CI 追加 `.github/workflows/ci.yml`: PR / feature push で `pub get → analyze → test`（Flutter 3.38.9 stable 固定）。`integration_test` と `dart format` は初回 CI 必須から除外。
+- Codex Review 追加 `.github/workflows/codex-review.yml`: PR 差分をレビューしコメント投稿。`pull_request_target` 不使用 / 権限 `contents:read`+`pull-requests:write` / auto-merge・auto-push なし / `secrets.OPENAI_API_KEY` 使用 / キー未設定時はスキップ(green)。
+- docs 追加: `NEXT_TASK.md`（次タスク単一ソース）/ `SPRINT_TEMPLATE.md`（雛形）/ `CLAUDE_RUNBOOK.md`（運用手順）。
+- `.gitignore` に `.env` 系の明示除外を追加。`README.md` に CI バッジとハーネス節を追記。
+
+### 検証
+- `flutter analyze`: clean
+- `flutter test`: 435/435 pass 維持（ゲームコード無変更のため回帰なし）
+
+### 残る運用設定（リポジトリ側・コード外）
+- GitHub repo secrets に `OPENAI_API_KEY` を登録（Codex Review 有効化）。
+- main ブランチ保護を設定（PR必須・CI必須チェック・直push禁止）。

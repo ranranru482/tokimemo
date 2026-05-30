@@ -1,0 +1,103 @@
+name: Codex Review
+
+# PR 差分を OpenAI Codex でレビューし、結果を PR コメントとして投稿する。
+# 安全制約（ハーネス方針）:
+#   - コメントのみ。auto merge / auto push は一切しない。
+#   - pull_request_target は使わない（fork からの secret 露出を避ける）。
+#   - OPENAI_API_KEY が未設定（fork PR 等）の場合はスキップして green で終える。
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: codex-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+# 最小権限: コードは読むだけ、PR にコメントするだけ。書き込み/マージ権限は与えない。
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    name: codex review (comment only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check OPENAI_API_KEY availability
+        id: guard
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "has_key=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::OPENAI_API_KEY not set (fork PR or secret missing). Skipping Codex review."
+          else
+            echo "has_key=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.guard.outputs.has_key == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Collect PR diff
+        if: steps.guard.outputs.has_key == 'true'
+        id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff "$BASE_SHA" "$HEAD_SHA" > pr.diff || true
+          # API へ渡す上限（巨大 PR でのトークン暴発防止）。
+          head -c 120000 pr.diff > pr.diff.trunc
+          mv pr.diff.trunc pr.diff
+          echo "bytes=$(wc -c < pr.diff)" >> "$GITHUB_OUTPUT"
+
+      - name: Run Codex review
+        if: steps.guard.outputs.has_key == 'true'
+        id: codex
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # 差分を読み込み、JSON 文字列として安全にエスケープしてプロンプトに埋め込む。
+          DIFF_JSON=$(jq -Rs . < pr.diff)
+          SYSTEM='あなたは Flutter/Dart に詳しいコードレビュアーです。以下の PR 差分をレビューし、日本語で簡潔に報告してください。観点: 既存ゲーム機能を壊す変更がないか / テストを壊さないか / セキュリティ(secrets 混入) / CI 設定の妥当性 / 明確なバグ。問題がなければ「LGTM」と明記。修正提案は箇条書きで、確信度の低い指摘は (要確認) を付ける。'
+          REQ=$(jq -n --arg sys "$SYSTEM" --argjson diff "$DIFF_JSON" '{
+            model: "gpt-5-codex",
+            input: [
+              {role:"system", content:$sys},
+              {role:"user", content:("PR diff:\n" + $diff)}
+            ]
+          }')
+          HTTP=$(curl -sS -w '%{http_code}' -o resp.json \
+            https://api.openai.com/v1/responses \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$REQ" || echo "000")
+          echo "http=$HTTP"
+          if [ "$HTTP" != "200" ]; then
+            echo "::warning::Codex API returned HTTP $HTTP"
+            echo "_Codex Review はレスポンスを取得できませんでした (HTTP $HTTP)。API キー/モデル名/レート制限を確認してください。_" > review.md
+          else
+            # Responses API: output_text を優先、無ければ message content を連結。
+            jq -r '(.output_text // ([.output[]?.content[]?.text] | join("\n")) // "")' resp.json > review.md
+            [ -s review.md ] || echo "_Codex から空のレビューが返りました。_" > review.md
+          fi
+
+      - name: Post review comment
+        if: steps.guard.outputs.has_key == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo "## 🤖 Codex Review"
+            echo ""
+            cat review.md
+            echo ""
+            echo "---"
+            echo "_自動投稿（コメントのみ / auto-merge・auto-push なし）。最終判断は人間が行ってください。_"
+          } > comment.md
+          gh pr comment "$PR_NUMBER" --body-file comment.md
