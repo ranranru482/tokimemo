@@ -83,4 +83,40 @@ void main() {
       findsNothing,
     );
   });
+
+  group('assetPathForExpression: 命名規約', () {
+    final akari = CharacterRepository.byId(CharacterId.akari);
+    final yui = CharacterRepository.byId(CharacterId.yui);
+
+    test('灯の笑顔 → akari_smile.png', () {
+      expect(
+        CharacterPortrait.assetPathForExpression(akari, Expression.smile),
+        'assets/characters/akari_smile.png',
+      );
+    });
+    test('結衣の困惑 → yui_troubled.png', () {
+      expect(
+        CharacterPortrait.assetPathForExpression(yui, Expression.troubled),
+        'assets/characters/yui_troubled.png',
+      );
+    });
+    test('通常表情 → <id>_normal.png', () {
+      expect(
+        CharacterPortrait.assetPathForExpression(akari, Expression.normal),
+        'assets/characters/akari_normal.png',
+      );
+    });
+  });
+
+  testWidgets('立ち絵が未投入でもフォールバックしてクラッシュしない', (tester) async {
+    // テスト環境にはアセットが無い → Image.asset は errorBuilder へ落ち、
+    // イニシャル円が描かれる。例外で落ちないことを確認する。
+    await pumpPortrait(tester, expression: Expression.normal);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('characterPortrait.akari.normal')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
 }

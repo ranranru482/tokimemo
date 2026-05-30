@@ -72,8 +72,10 @@ flutter:
     # 背景 16（png）: feat/background-assets で有効化。実画像未投入でも
     # ScenicBackground の errorBuilder がグラデーションへフォールバックする。
     - assets/backgrounds/
+    # 立ち絵 15（png 透過）: feat/character-assets で有効化。実画像未投入でも
+    # CharacterPortrait の errorBuilder がイニシャル円へフォールバックする。
+    - assets/characters/
   #   - assets/audio/        # BGM 6 / SE 8（mp3）
-  #   - assets/characters/   # 立ち絵 15（png 透過）
   #   - assets/cg/           # CG 65（png）
   #   - assets/ui/           # UI 補助素材（任意）
 
