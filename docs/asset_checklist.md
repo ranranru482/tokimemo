@@ -126,6 +126,61 @@ BGM と同一の `assets/audio/` ディレクトリを共有するため、pubsp
 | 蓮見 紗夜 (sayo) | [ ] `sayo_normal.png` | [ ] `sayo_smile.png` | [ ] `sayo_troubled.png` |
 | 槙原 結衣 (yui) | [ ] `yui_normal.png` | [ ] `yui_smile.png` | [ ] `yui_troubled.png` |
 
+> 命名規約: `<character_id>_<expression>.png`。`character_id` は `CharacterId.name`
+> （`akari | uta | toru | sayo | yui`）、`expression` は `Expression.name`
+> （`normal | smile | troubled`）に一致させる。差替えコードが
+> `${character.id.name}_${expression.name}.png` を生成するため、表記揺れは解決されない。
+
+#### 立ち絵 部分投入 / 仮素材差替えの最小手順
+
+⚠️ **音声と性質が異なる（背景と同じ）。** `CharacterPortrait` は現状
+`Container`（themeColor 円 + イニシャル + 表情アイコン）で擬似描画し、`Image.asset` を
+一切呼んでいない。そのため「立ち絵が無い／一部だけ」の状態でも **実行時依存はゼロ＝
+クラッシュしない**（参照していないため try/catch も不要）。
+
+1. `assets/characters/` に投入できる分だけ `<id>_<expression>.png`（透過 PNG）を配置。
+   キャラ単位（例: akari の 3 表情のみ）でも表情単位でも部分投入可。
+2. `pubspec.yaml` の `flutter.assets:` の `- assets/characters/` 行を解除。
+   - 現状ディレクトリは `.gitkeep` / `README.md` のみで非空のため、`flutter pub get` /
+     build は **エラーにならない**（無関係ファイルがバンドルされるだけ）。
+3. `flutter pub get` を実行。**この段階では立ち絵はプレースホルダのままで画像は出ない**
+   （コードがまだ `Image.asset` を呼んでいないため。pubspec 解除だけでは描画は変わらない）。
+4. 実画像を反映するには `lib/widgets/character_portrait.dart` の差替えが必要（下記）。
+   このとき **必ず `errorBuilder` で現行プレースホルダ（円 + イニシャル）へフォールバック**
+   させること。立ち絵には欠損ガードが無いため、未投入ファイルを直接 `Image.asset` すると
+   当該キャラ/表情が例外/灰色になる。フォールバックを付ければ部分投入でも安全。
+5. 仮素材を差し替えるときはファイル名そのままで上書きすれば、次回起動から反映される。
+
+#### 立ち絵の差替えポイント（コード側）
+
+`lib/widgets/character_portrait.dart` の `build` 内 `Stack`（円 Container + Text +
+表情アイコン）を
+`Image.asset('assets/characters/${character.id.name}_${expression.name}.png', errorBuilder: 現行プレースホルダ)`
+に置換する。`isSilhouette` 分岐・`AnimatedSwitcher`（200ms クロスフェード）・`_expressionIcon`
+はフォールバック用に残す。`size` は透過画像の表示枠としてそのまま使える。
+
+#### 立ち絵投入時の検証ポイント
+
+- [ ] キャラ一覧カードで各キャラの `*_normal.png` が表示される（小サイズ ≈56）。
+- [ ] キャラ詳細画面で立ち絵が大サイズ（≈160）で表示される。
+- [ ] 会話モーダル進行中に表情が `normal → smile → troubled` へ 200ms クロスフェードで切替。
+- [ ] 未会いキャラはシルエット（`isSilhouette`）表示のままで実画像が漏れない。
+- [ ] 一部のみ投入時、未投入のキャラ/表情はプレースホルダへフォールバックしクラッシュしない。
+- [ ] 透過 PNG の背景が抜けており、重ねた背景/カード色が透けて見える。
+
+#### 低スペック端末でのメモリリスク
+
+- 立ち絵 15 枚を一括プリロードしない。`Image.asset` は表示中のもののみデコードされ、
+  `ImageCache`（既定 1000 枚 / 100 MB）が LRU 管理する。
+- 推奨 1024×1536（縦長 + アルファ）は **decode 後 RGBA で約 6.3 MB/枚**。ファイルが透過 PNG /
+  WebP で ~300 KB でも、デコード後メモリは解像度依存でファイルサイズと無関係。
+- カード用（≈56px）と詳細用（≈160px）で同一原寸をデコードすると無駄が大きい。低スペック端末では
+  `cacheWidth`（カード用は端末 dpr × 56px 程度）指定で実メモリを削減できる（必要時のみ・現状不要）。
+- WebP 透過（lossy 80%, alpha 100）はファイル容量 30–50% 削減だが **デコード後メモリは PNG と同じ**。
+  メモリ削減ではなく APK サイズ削減効果として扱う。
+- 会話中の表情切替は同一キャラ 3 枚を行き来する程度で、`ImageCache` 上限に対し十分小さく
+  明示的 `evict` は不要。
+
 ---
 
 ## 3. CG（assets/cg/） — 65 ファイル
@@ -192,6 +247,58 @@ BGM と同一の `assets/audio/` ディレクトリを共有するため、pubsp
 | summer | [ ] `summer_morning.png` | [ ] `summer_noon.png` | [ ] `summer_evening.png` | [ ] `summer_night.png` |
 | autumn | [ ] `autumn_morning.png` | [ ] `autumn_noon.png` | [ ] `autumn_evening.png` | [ ] `autumn_night.png` |
 | winter | [ ] `winter_morning.png` | [ ] `winter_noon.png` | [ ] `winter_evening.png` | [ ] `winter_night.png` |
+
+> ⚠️ **時間帯トークンは `noon`（昼）であって `day` ではない。** ファイル名は
+> `DayPhase.name`（`morning | noon | evening | night`）に一致させる必要がある
+> （差替えコードが `${season}_${phase}.png` を生成するため）。`spring_day.png`
+> 等の命名は解決されず無視される。
+
+#### 背景 部分投入 / 仮素材差替えの最小手順
+
+⚠️ **音声と性質が異なる。** `ScenicBackground` は現状 `LinearGradient` のみで描画し、
+`Image.asset` を一切呼んでいない（差替えポイントはコメントで予約済みだが未実装）。
+そのため「背景素材が無い／一部だけ」の状態でも **実行時依存はゼロ＝クラッシュしない**
+（音声のような try/catch 握りつぶしは不要、そもそも参照していない）。
+
+1. `assets/backgrounds/` に投入できる分だけ `<season>_<noon|...>.png` を配置（残りは未配置で可）。
+2. `pubspec.yaml` の `flutter.assets:` の `- assets/backgrounds/` 行を解除。
+   - 現状ディレクトリには `.gitkeep` / `README.md` のみ存在するため非空。空でない限り
+     `flutter pub get` / build は **エラーにならない**（無関係ファイルがバンドルされるだけ）。
+3. `flutter pub get` を実行。**この段階では背景はグラデーションのままで画像は出ない**
+   （コードがまだ `Image.asset` を呼んでいないため。pubspec 解除だけでは描画は変わらない）。
+4. 実画像を反映するには `lib/widgets/scenic_background.dart` の差替えが必要（下記）。
+   このとき **必ず `errorBuilder`（または `frameBuilder`）でグラデーションへフォールバック**
+   させること。音声と違い背景には欠損ガードが無いため、未投入ファイルを直接 `Image.asset`
+   すると当該背景が例外/灰色になる。フォールバックを付ければ部分投入でも安全。
+5. 仮素材を差し替えるときはファイル名そのままで上書きすれば、次回起動から反映される。
+
+#### 背景の差替えポイント（コード側）
+
+`lib/widgets/scenic_background.dart` の `build` 内 `AnimatedContainer`（`LinearGradient`）を
+`Image.asset('assets/backgrounds/${palette.season.name}_${palette.timeOfDay.name}.png', fit: BoxFit.cover, errorBuilder: グラデーション)` に置換する。
+色決定関数 `_topColorFor` / `_midColorFor` / `_bottomColorFor` はフォールバック用に残す。
+
+#### 背景投入時の検証ポイント
+
+- [ ] 4 月（春）ホーム起動で `spring_*` 系背景が表示される。
+- [ ] スロット進行（morning→midday→evening→night）で `*_morning → *_noon → *_evening → *_night` が
+      500 ms クロスフェードで切り替わる。
+- [ ] 月跨ぎ（3-5 春 / 6-8 夏 / 9-11 秋 / 12-2 冬）で季節背景が切り替わる。
+- [ ] 一部のみ投入時、未投入の季節/時間帯はグラデーションへフォールバックしクラッシュしない。
+- [ ] 前景（StatusBar / 行動枠）が背景に埋もれず読める（現状 `Opacity 0.35` で重ねている。
+      実写背景は立ち絵前提でローコントラスト推奨。コントラストが強い場合は Opacity 調整を検討）。
+
+#### 低スペック端末でのメモリリスク
+
+- 背景 16 枚を **一括プリロードしない**。`Image.asset` は表示中の 1 枚のみデコードされ、
+  Flutter の `ImageCache`（既定 1000 枚 / 100 MB）が LRU 管理するため、同時常駐は実質 1〜2 枚。
+- 1920×1080 を **decode 後 RGBA で約 8.3 MB/枚** 占有する（ファイルが PNG/WebP で 400 KB でも
+  デコード後はファイルサイズと無関係に解像度依存）。低スペック端末では `ResizeImage` または
+  `cacheWidth: <端末幅px>` の指定で実メモリを削減できる（必要時のみ・現状は不要）。
+- WebP（lossy 80%）はファイル容量を 30–50% 削減するが **デコード後メモリは PNG と同じ**。
+  メモリ削減効果ではなく APK サイズ削減効果として扱う。
+- 季節/時間帯切替時、旧背景は次フレームで GC 対象になるが `ImageCache` には残る。16 枚程度なら
+  100 MB 上限に収まるため明示的 `evict` は不要。
 
 ---
 
