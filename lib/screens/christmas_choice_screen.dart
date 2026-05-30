@@ -235,7 +235,7 @@ GameEvent buildChristmasEventFor(CharacterId id) {
         category: EventCategory.milestone,
         target: CharacterId.akari,
         title: '七瀬さんと過ごすイブ',
-        locationLabel: '会社近くの夜のカフェ',
+        locationLabel: '灯さんのカフェ、閉店後',
         script: [
           EventLine(
             speaker: CharacterId.akari,
@@ -278,7 +278,7 @@ GameEvent buildChristmasEventFor(CharacterId id) {
         category: EventCategory.milestone,
         target: CharacterId.uta,
         title: '詩さんと過ごすイブ',
-        locationLabel: '閉店後の小さなカフェ',
+        locationLabel: '閉店後の書店併設カフェ',
         script: [
           EventLine(
             speaker: CharacterId.uta,
@@ -286,19 +286,19 @@ GameEvent buildChristmasEventFor(CharacterId id) {
             text: 'いらっしゃい。今夜は貸切ってことにしました。'
                 '——あなただけのために。',
           ),
-          EventLine(text: 'カウンターにはホットチョコレートと、淹れたての珈琲が並んでいる。'),
+          EventLine(text: 'テーブルにはホットチョコレートと、淹れたての珈琲が並んでいる。'),
           EventLine(
             speaker: CharacterId.uta,
             expression: Expression.normal,
-            text: '今夜、一曲だけ歌います。誰にも聴かせていない、新しい曲。',
+            text: '今夜、一節だけ読みます。誰にも見せていない、書きかけの企画書の前書き。',
           ),
-          EventLine(text: 'ギターの最初の一音が、静かな店内に染みていく。'),
+          EventLine(text: '低く読み上げる声が、静かな店内に染みていく。'),
         ],
         choice: EventChoiceScene(
           prompt: '聴き終えた後、何と返すか。',
           choices: [
             EventChoice(
-              label: '「最初に聴かせてくれて、本当にありがとう」',
+              label: '「最初に読んでくれて、本当にありがとう」',
               outcome: ChoiceOutcome(
                 label: '受け取る',
                 affinityDelta: 4,
@@ -309,7 +309,7 @@ GameEvent buildChristmasEventFor(CharacterId id) {
         ),
         cgKey: 'cg.milestone.christmas.uta',
         cgTitle: '貸切の閉店後',
-        cgCaption: 'ギターの最初の一音が、静かな店内に染みていった夜。',
+        cgCaption: '読み上げる声が、静かな店内に染みていった夜。',
       );
     case CharacterId.toru:
       return const GameEvent(
@@ -317,15 +317,15 @@ GameEvent buildChristmasEventFor(CharacterId id) {
         category: EventCategory.milestone,
         target: CharacterId.toru,
         title: '鴻巣さんと過ごすイブ',
-        locationLabel: '河川敷の小さな焚き火',
+        locationLabel: '走り納めのあとの河川敷',
         script: [
           EventLine(
             speaker: CharacterId.toru,
             expression: Expression.normal,
-            text: '——イブにキャンプって、変ですか。'
+            text: '——イブに走り納めって、変ですか。'
                 '人が多い場所より、こっちの方が、たぶん、合ってる。',
           ),
-          EventLine(text: '焚き火に手をかざすと、街の音が遠くなる。'),
+          EventLine(text: '携帯バーナーの火に手をかざすと、街の音が遠くなる。'),
           EventLine(
             speaker: CharacterId.toru,
             expression: Expression.smile,
@@ -346,7 +346,7 @@ GameEvent buildChristmasEventFor(CharacterId id) {
           ],
         ),
         cgKey: 'cg.milestone.christmas.toru',
-        cgTitle: '河川敷の焚き火',
+        cgTitle: '河川敷の走り納め',
         cgCaption: '街の音が遠くなる夜、コーヒー豆だけ持ってきた人と。',
       );
     case CharacterId.sayo:
@@ -355,12 +355,12 @@ GameEvent buildChristmasEventFor(CharacterId id) {
         category: EventCategory.milestone,
         target: CharacterId.sayo,
         title: '蓮見さんと過ごすイブ',
-        locationLabel: '隣室のリビング',
+        locationLabel: '紗夜さんのアトリエ',
         script: [
           EventLine(
             speaker: CharacterId.sayo,
             expression: Expression.smile,
-            text: '——うちでよかったら、どうぞ。'
+            text: '——うちのアトリエでよかったら、どうぞ。'
                 '紅茶、新しい缶を開けたの。',
           ),
           EventLine(text: '足元では三毛猫が一番暖かい場所を陣取って、目を細めている。'),
@@ -394,19 +394,19 @@ GameEvent buildChristmasEventFor(CharacterId id) {
         category: EventCategory.milestone,
         target: CharacterId.yui,
         title: '槙原さんと過ごすイブ',
-        locationLabel: '夜のジムの小さな打ち上げ',
+        locationLabel: '夜の楽器店の小さな打ち上げ',
         script: [
           EventLine(
             speaker: CharacterId.yui,
             expression: Expression.smile,
             text: '今夜は閉店後の貸切！ 一緒に打ち上げです。'
-                '——練習、よく続けてくれましたよね。',
+                '——試奏、よく付き合ってくれましたよね。',
           ),
           EventLine(text: 'ホワイトボードに「今年もありがとう」とマーカーで書いてある。'),
           EventLine(
             speaker: CharacterId.yui,
             expression: Expression.normal,
-            text: '来年は、ペアの大会に出てみたいんです。'
+            text: '来年は、ふたりでフェスのステージに立ってみたいんです。'
                 '——一緒に。',
           ),
         ],
@@ -414,7 +414,7 @@ GameEvent buildChristmasEventFor(CharacterId id) {
           prompt: '何と返すか。',
           choices: [
             EventChoice(
-              label: '「一緒に、出ます」',
+              label: '「一緒に、立ちます」',
               outcome: ChoiceOutcome(
                 label: '伴走',
                 affinityDelta: 4,
@@ -424,7 +424,7 @@ GameEvent buildChristmasEventFor(CharacterId id) {
           ],
         ),
         cgKey: 'cg.milestone.christmas.yui',
-        cgTitle: '貸切の夜のジム',
+        cgTitle: '貸切の夜の楽器店',
         cgCaption: 'ホワイトボードの「今年もありがとう」と、来年への約束。',
       );
   }

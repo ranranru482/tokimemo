@@ -48,39 +48,39 @@ class GiftCatalog {
       displayName: '文芸文庫',
       price: 2000,
       description: '昨年の文学賞候補に上がった作品の文庫版。',
-      targetCharacterId: CharacterId.akari, // 七瀬：文化系・落ち着いた読書好み
+      targetCharacterId: CharacterId.uta, // 久遠：出版社編集者
       affinityBonus: 2,
     ),
     GiftItem(
       id: 'gift.coffee_beans',
       displayName: 'スペシャルティ珈琲豆',
       price: 1800,
-      description: '産地違いの小袋セット。淹れる人を選ぶ少しビターな配合。',
-      targetCharacterId: CharacterId.uta, // 久遠：カフェ店主
+      description: '産地違いの小袋セット。試作の合間に味わいたくなる配合。',
+      targetCharacterId: CharacterId.akari, // 七瀬：カフェ研究員
       affinityBonus: 2,
     ),
     GiftItem(
       id: 'gift.tech_magazine',
-      displayName: 'ガジェット技術誌',
+      displayName: 'スポーツ専門誌',
       price: 2500,
-      description: '今月号は分散システム特集。仕事帰りの読み物に。',
-      targetCharacterId: CharacterId.toru, // 鴻巣：エンジニア
+      description: '今月号は最新ランニングギア特集。仕事帰りの読み物に。',
+      targetCharacterId: CharacterId.toru, // 鴻巣：スポーツメーカー営業
       affinityBonus: 2,
     ),
     GiftItem(
       id: 'gift.tea_set',
       displayName: '紅茶セット',
       price: 2200,
-      description: '茶葉 3 種とリーフディフューザの組み合わせ。深夜の一杯に。',
-      targetCharacterId: CharacterId.sayo, // 蓮見：紅茶派
+      description: '茶葉 3 種とリーフディフューザの組み合わせ。深夜の作業の一杯に。',
+      targetCharacterId: CharacterId.sayo, // 蓮見：デザイナー（紅茶派）
       affinityBonus: 2,
     ),
     GiftItem(
       id: 'gift.protein',
-      displayName: 'プロテインバー（箱）',
+      displayName: 'ギター弦セット',
       price: 1500,
-      description: 'トレーニング後のリカバリー用。プレーン味 12 本入り。',
-      targetCharacterId: CharacterId.yui, // 槙原：トレーナー
+      description: '定番ゲージの替え弦 3 セット。試奏や練習の消耗品に。',
+      targetCharacterId: CharacterId.yui, // 槙原：楽器店スタッフ
       affinityBonus: 2,
     ),
   ];

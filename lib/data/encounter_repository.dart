@@ -13,47 +13,47 @@ class EncounterRepository {
   /// 5 本の出会いイベント。順序は CharacterId の宣言順。
   static final List<EncounterEvent> all =
       List<EncounterEvent>.unmodifiable(<EncounterEvent>[
-    // 七瀬 灯（4/10 金）— 同社・別部署の先輩
+    // 七瀬 灯（4/10 金）— よく通うカフェのカフェ研究員
     EncounterEvent(
       targetId: CharacterId.akari,
       fireDate: CharacterRepository.byId(CharacterId.akari).firstMeetDate,
-      locationLabel: '会社のエレベーターホール',
+      locationLabel: 'よく通うカフェのカウンター',
       lines: const [
         DialogueLine(
           Expression.normal,
-          '——あ。新しく入った人？ 別部署だけど、勉強会で見かけたことがある気がする。',
+          '——あ。よく来てくれる方ですよね。いつも同じ時間に、同じ席で。',
         ),
         DialogueLine(
           Expression.smile,
-          '私はマーケの七瀬。よろしくね。困ったら声かけて、答えられる範囲で答えるから。',
+          '私は七瀬。ここで商品開発をしてる研究員です。よかったら、新作の感想、いつか聞かせて。',
         ),
         DialogueLine(
           Expression.normal,
-          '——あ、エレベーター来た。じゃ、また勉強会で。',
+          '——あ、抽出のタイマーだ。じゃ、また。試作ができたら出すね。',
         ),
       ],
     ),
-    // 久遠 詩（4/15 水）— 通勤路のカフェ店長
+    // 久遠 詩（4/15 水）— 通勤路の書店併設カフェにいる編集者
     EncounterEvent(
       targetId: CharacterId.uta,
       fireDate: CharacterRepository.byId(CharacterId.uta).firstMeetDate,
-      locationLabel: '通勤路の小さなカフェ',
+      locationLabel: '通勤路の書店併設カフェ',
       lines: const [
         DialogueLine(
           Expression.smile,
-          'いらっしゃい。あ、駅の向こうから歩いてきた方ですよね。最近よく前を通る人だ。',
+          'あ、すみません、席ふさいでましたよね。朝はここでゲラを読むのが日課で。',
         ),
         DialogueLine(
           Expression.normal,
-          'うちは個人でやってるカフェなので、豆は浅煎り中心です。よかったらおすすめ淹れますね。',
+          '出版社で編集をしてるんです。本になる前の文章を、こうやって朝のうちに直してて。',
         ),
         DialogueLine(
           Expression.smile,
-          '——私は久遠。詩、って呼ばれることが多いです。また気が向いたらどうぞ。',
+          '——私は久遠。詩、って呼ばれることが多いです。また朝に、どうぞ。',
         ),
       ],
     ),
-    // 鴻巣 透（4/20 月）— 取引先のエンジニア
+    // 鴻巣 透（4/20 月）— 取引先のスポーツメーカー営業
     EncounterEvent(
       targetId: CharacterId.toru,
       fireDate: CharacterRepository.byId(CharacterId.toru).firstMeetDate,
@@ -61,11 +61,11 @@ class EncounterRepository {
       lines: const [
         DialogueLine(
           Expression.normal,
-          '初めまして。システム側担当の鴻巣です。要件、メールで先に送っておいたほうの方ですか。',
+          '初めまして。メーカー営業の鴻巣です。提案書、メールで先に送っておいたほうの方ですか。',
         ),
         DialogueLine(
           Expression.troubled,
-          '——あの、念のため確認なんですが、そこ、納期わりとシビアです。'
+          '——あの、念のため確認なんですが、その納期、わりとシビアです。'
               '正直に言ってもらえたほうが後で困らないので。',
         ),
         DialogueLine(
@@ -74,48 +74,48 @@ class EncounterRepository {
         ),
       ],
     ),
-    // 蓮見 紗夜（5/5 火・祝相当）— マンションの隣人
+    // 蓮見 紗夜（5/5 火・祝相当）— 深夜のコワーキングで会うデザイナー
     EncounterEvent(
       targetId: CharacterId.sayo,
       fireDate: CharacterRepository.byId(CharacterId.sayo).firstMeetDate,
-      locationLabel: 'マンションの深夜の廊下',
+      locationLabel: '深夜のコワーキングスペース',
       lines: const [
         DialogueLine(
           Expression.troubled,
-          '——あ、ごめんなさい。猫が逃げちゃって。'
-              '玄関ドア開けたら走っていって。',
+          '——あ、ごめんなさい。色見本、散らかしちゃって。'
+              '締切前で、つい広げすぎて。',
         ),
         DialogueLine(
           Expression.normal,
-          '隣の蓮見です。翻訳の仕事してて、夜遅くまで起きてるの。'
-              '物音うるさかったらすみません。',
+          '蓮見です。デザインの仕事してて、夜型なの。'
+              'こんな時間に居るの、たいてい私くらいだから。',
         ),
         DialogueLine(
           Expression.smile,
-          '——あ、捕まえてくれた。ありがとう。助かりました。本当に。',
+          '——あ、拾ってくれた。ありがとう。助かりました。本当に。',
         ),
       ],
     ),
-    // 槙原 結衣（5/10 日）— ジムのトレーナー
+    // 槙原 結衣（5/10 日）— 駅前の楽器店スタッフ
     EncounterEvent(
       targetId: CharacterId.yui,
       fireDate: CharacterRepository.byId(CharacterId.yui).firstMeetDate,
-      locationLabel: '週末通うジムの受付',
+      locationLabel: '駅前の楽器店',
       lines: const [
         DialogueLine(
           Expression.smile,
-          'はじめまして！ 今日担当する槙原です。'
-              '体験プログラム来てくれてありがとうございます。',
+          'いらっしゃいませ！ 今日担当する槙原です。'
+              '試奏、気になるのあれば気軽に声かけてくださいね。',
         ),
         DialogueLine(
           Expression.normal,
-          'デスクワーク中心みたいなので、まずは肩甲骨まわりからほぐしましょう。'
-              '無理しないでいいです、できる範囲で。',
+          '初めてだと迷いますよね。まずは持ったときに「軽いな」と思うやつから。'
+              '無理に高いの選ばなくていいです、続けられるのが一番なので。',
         ),
         DialogueLine(
           Expression.smile,
-          '——お疲れさまでした！ 良い汗かきましたね。続けたくなったら、'
-              'いつでも受付で結衣を呼んでください。',
+          '——お疲れさまでした！ いい音、出てましたよ。気が向いたら、'
+              'いつでも店頭で結衣を呼んでください。',
         ),
       ],
     ),

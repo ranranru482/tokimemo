@@ -4,12 +4,12 @@ import '../models/event.dart';
 
 /// Sprint 08: 各キャラ 5 本ずつ（合計 25 本）の個別イベント。
 ///
-/// spec.md §5「攻略の鍵」を参考にモチーフを設計：
-/// - 七瀬 灯: 写真展 / 社内勉強会
-/// - 久遠 詩: カフェ夜ライブ / 朝の珈琲
-/// - 鴻巣 透: 論理的選択 / ソロキャンプ
-/// - 蓮見 紗夜: 雨の日の廊下 / 紅茶と猫
-/// - 槙原 結衣: 草大会の応援 / ジム朝練
+/// character_profiles.md（社会人版・正典）の職業に沿ってモチーフを設計：
+/// - 七瀬 灯（カフェ研究員）: 試作と試飲 / 商品開発
+/// - 久遠 詩（出版社編集者）: ゲラと朗読会 / 企画
+/// - 鴻巣 透（スポーツメーカー営業）: 製品テスト / 論理的な提案
+/// - 蓮見 紗夜（デザイナー）: 夜のアトリエ / 紅茶と猫
+/// - 槙原 結衣（楽器店スタッフ）: 試奏とライブ / バンド
 ///
 /// 解放条件は基本的に [requiredAffinityStage]（誘い反復で 2 段階目=20以上に
 /// 到達したら Event 1 解放）。Event 3 以降は requiredMonth とのANDで揃える。
@@ -34,7 +34,7 @@ class IndividualEventCatalog {
   }
 
   // ===========================================================================
-  // 七瀬 灯（akari）— 写真展 / 勉強会 / フィルムカメラ
+  // 七瀬 灯（akari）— カフェ研究員 / 商品開発 / 試作と試飲
   // ===========================================================================
   static const List<GameEvent> _akari = [
     GameEvent(
@@ -42,26 +42,26 @@ class IndividualEventCatalog {
       category: EventCategory.individual,
       target: CharacterId.akari,
       requiredAffinityStage: 2,
-      title: '勉強会のあとで',
-      locationLabel: '会社の階段の踊り場',
+      title: '試作の一杯',
+      locationLabel: 'カフェの試作カウンター',
       script: [
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.normal,
-          text: '——お疲れさま。さっきの質問、ちゃんと聞こえてたよ。よく調べてる。',
+          text: '——お疲れさま。さっき味の感想、ちゃんと聞こえてたよ。よく舌が動いてる。',
         ),
-        EventLine(text: '勉強会のあと、階段の踊り場で偶然会った七瀬さんが、缶コーヒーをひとつ差し出してきた。'),
+        EventLine(text: '閉店後の試作カウンターで、七瀬さんが小さなカップをひとつ差し出してきた。新作ブレンドの試作だという。'),
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.smile,
-          text: '私もね、最初の3年は同じことばっかり聞いてた。だから恥ずかしがらなくていい。',
+          text: '私もね、最初の頃は「美味しい」しか言えなかった。だから言葉に詰まっても恥ずかしがらなくていい。',
         ),
       ],
       choice: EventChoiceScene(
         prompt: '七瀬さんに何と返そうか。',
         choices: [
           EventChoice(
-            label: '「ありがとうございます。助かります」',
+            label: '「ありがとうございます。すごく好きな味です」',
             outcome: ChoiceOutcome(
               label: '無難',
               affinityDelta: 2,
@@ -69,7 +69,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「七瀬さんの3年目、どんな感じだったんですか？」',
+            label: '「七瀬さんは、最初どうやって舌を鍛えたんですか？」',
             outcome: ChoiceOutcome(
               label: '踏み込む',
               affinityDelta: 1,
@@ -79,35 +79,35 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.akari.1',
-      cgTitle: '踊り場の缶コーヒー',
-      cgCaption: '勉強会の帰り、缶コーヒーを片手に立っていた先輩の横顔。',
+      cgTitle: '試作カウンターの一杯',
+      cgCaption: '閉店後、試作のカップを片手に立っていた研究員の横顔。',
     ),
     GameEvent(
       id: 'ind.akari.2',
       category: EventCategory.individual,
       target: CharacterId.akari,
       requiredAffinityStage: 3,
-      title: 'フィルムカメラの話',
-      locationLabel: '会社近くの公園のベンチ',
+      title: '焙煎の話',
+      locationLabel: 'カフェ近くの公園のベンチ',
       script: [
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.smile,
           text: '——お昼、ここで食べていい？ あ、ごめん、聞いてから座ればよかった。',
         ),
-        EventLine(text: '七瀬さんのカバンから、見慣れない小さなカメラが顔をのぞかせている。'),
+        EventLine(text: '七瀬さんのカバンから、生豆のサンプルが入った小瓶がいくつも顔をのぞかせている。'),
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.normal,
-          text: '昔の機械式。デジタルと違って、撮ったあとすぐ見られないのがいいの。'
-              '忘れたころに現像してもらって、ようやく思い出す。',
+          text: '焙煎って、一度火を入れたら戻せないの。豆のポテンシャルを当日の温度や湿度で読む。'
+              '失敗した日の豆ほど、忘れたころに教えてくれることがある。',
         ),
       ],
       choice: EventChoiceScene(
-        prompt: 'カメラについて何か聞いてみる。',
+        prompt: '焙煎について何か聞いてみる。',
         choices: [
           EventChoice(
-            label: '「いつか撮ってもらえます？」',
+            label: '「いつか焙煎、見せてもらえます？」',
             outcome: ChoiceOutcome(
               label: '距離を縮める',
               affinityDelta: 2,
@@ -115,7 +115,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「写真、見せてもらってもいいですか？」',
+            label: '「その小瓶の豆、飲み比べてみたいです」',
             outcome: ChoiceOutcome(
               label: '丁寧',
               affinityDelta: 1,
@@ -125,8 +125,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.akari.2',
-      cgTitle: '公園のフィルムカメラ',
-      cgCaption: '昼下がりの公園、銀色の小さなカメラを抱えた人の話を聞いた。',
+      cgTitle: '公園の生豆サンプル',
+      cgCaption: '昼下がりの公園、小瓶の生豆を並べて話す人の横顔。',
     ),
     GameEvent(
       id: 'ind.akari.3',
@@ -134,23 +134,23 @@ class IndividualEventCatalog {
       target: CharacterId.akari,
       requiredAffinityStage: 3,
       requiredMonth: 9,
-      title: '写真展の招待',
-      locationLabel: '商店街の小さな個展会場',
+      title: '新作の試飲会',
+      locationLabel: 'カフェの試飲イベント会場',
       script: [
-        EventLine(text: '休日の昼、商店街の二階にある小さなギャラリー。'),
-        EventLine(text: '会場の中ほどで、白いシャツの七瀬さんが、こちらに小さく手を振った。'),
+        EventLine(text: '休日の昼、カフェの一角で開かれた小さな新作試飲会。'),
+        EventLine(text: '会場の中ほどで、エプロン姿の七瀬さんが、こちらに小さく手を振った。'),
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.smile,
           text: '来てくれたんだ。——あの、緊張するから、感想は帰り際でいいから。',
         ),
-        EventLine(text: '壁に並ぶのは、夕方の街角を撮った数十枚の写真。どれも誰かを待っているような色をしている。'),
+        EventLine(text: 'カウンターに並ぶのは、季節をテーマにした数種の試作ブレンド。どれも誰かを思い浮かべて作ったような味がする。'),
       ],
       choice: EventChoiceScene(
         prompt: '帰り際、何を伝えるか。',
         choices: [
           EventChoice(
-            label: '「全部、知らない街なのに、知ってる気がしました」',
+            label: '「どれも、知らない香りなのに、懐かしい気がしました」',
             outcome: ChoiceOutcome(
               label: '本音',
               affinityDelta: 2,
@@ -158,7 +158,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「次の個展も、絶対来ます」',
+            label: '「次の新作も、絶対飲みに来ます」',
             outcome: ChoiceOutcome(
               label: '前向き',
               affinityDelta: 3,
@@ -168,35 +168,35 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.akari.3',
-      cgTitle: '商店街の個展会場',
-      cgCaption: '夕方の街角の写真の前で、ぽつりと話した時間。',
+      cgTitle: 'カフェの試飲イベント',
+      cgCaption: '並んだ試作ブレンドの前で、ぽつりと話した時間。',
     ),
     GameEvent(
       id: 'ind.akari.4',
       category: EventCategory.individual,
       target: CharacterId.akari,
       requiredAffinityStage: 4,
-      title: '結婚を急かされる話',
-      locationLabel: '会社近くの居酒屋',
+      title: '商品化の壁',
+      locationLabel: 'カフェ近くの居酒屋',
       script: [
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.troubled,
-          text: '——ごめん、こんな話するつもりじゃなかったんだけど。実家がね、ちょっとうるさくて。',
+          text: '——ごめん、こんな話するつもりじゃなかったんだけど。上の方針が、ちょっとね。',
         ),
         EventLine(text: '隅の席で、七瀬さんはグラスを両手で包むようにしていた。'),
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.normal,
-          text: '転職するか、結婚するか、どっちかにしろって。'
-              '——自分の時間軸で決めたいだけなんだけどな。',
+          text: '原価を下げて量産しろって。私が一番いいと思った配合は、コストで通らなかった。'
+              '——いい豆を、いい状態で届けたいだけなんだけどな。',
         ),
       ],
       choice: EventChoiceScene(
         prompt: 'どう応えるか。',
         choices: [
           EventChoice(
-            label: '「七瀬さんのペースが、一番正しいと思います」',
+            label: '「七瀬さんが信じた味が、一番正しいと思います」',
             outcome: ChoiceOutcome(
               label: '味方になる',
               affinityDelta: 2,
@@ -204,7 +204,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「——その話、もう少し聞いてもいいですか」',
+            label: '「——その配合の話、もう少し聞いてもいいですか」',
             outcome: ChoiceOutcome(
               label: '寄り添う',
               affinityDelta: 1,
@@ -215,7 +215,7 @@ class IndividualEventCatalog {
       ),
       cgKey: 'cg.ind.akari.4',
       cgTitle: '居酒屋の片隅',
-      cgCaption: 'グラスを両手で包んで、ぽつぽつと家族の話をしていた夜。',
+      cgCaption: 'グラスを両手で包んで、ぽつぽつと仕事の悩みを話していた夜。',
     ),
     GameEvent(
       id: 'ind.akari.5',
@@ -224,14 +224,14 @@ class IndividualEventCatalog {
       requiredAffinityStage: 4,
       requiredMonth: 11,
       title: '冬の朝、決めたこと',
-      locationLabel: '会社近くのカフェ',
+      locationLabel: 'カフェの開店前',
       script: [
-        EventLine(text: '冷たい朝、開店直後のカフェで、七瀬さんが手を上げた。'),
+        EventLine(text: '冷たい朝、開店前のカフェで、七瀬さんが手を上げた。'),
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.normal,
-          text: '——転職、しないことにした。今の場所で、もう少しやってみる。'
-              'それと、結婚も、急がない。',
+          text: '——量産の話、断らなかった。代わりに、季節限定の小ロットで通すことにした。'
+              '妥協じゃなくて、両方やる。',
         ),
         EventLine(
           speaker: CharacterId.akari,
@@ -251,7 +251,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「これからも、話、聞かせてください」',
+            label: '「これからも、味の話、聞かせてください」',
             outcome: ChoiceOutcome(
               label: '関係を選ぶ',
               affinityDelta: 2,
@@ -270,22 +270,22 @@ class IndividualEventCatalog {
       target: CharacterId.akari,
       requiredAffinityStage: 3,
       requiredMonth: 5,
-      title: '五月の社内勉強会',
-      locationLabel: '会社の小会議室',
+      title: '五月の新メニュー会議',
+      locationLabel: 'カフェのバックヤード',
       script: [
         EventLine(
           speaker: CharacterId.akari,
           expression: Expression.smile,
-          text: '——五月病の時期にやる勉強会、効くと思って始めたの。'
-              '今日のテーマ、よかったら聞いてって。',
+          text: '——五月って、ホットからアイスへ切り替える季節なの。'
+              '今日の試作、よかったら味見してって。',
         ),
-        EventLine(text: 'ホワイトボードの脇には、彼女の手書きのレジュメ。'),
+        EventLine(text: '作業台の脇には、彼女の手書きのレシピノートが広げられている。'),
       ],
       choice: EventChoiceScene(
-        prompt: '勉強会のあと、どう声をかけるか。',
+        prompt: '味見のあと、どう声をかけるか。',
         choices: [
           EventChoice(
-            label: '「レジュメ、社内ブログに転載していいですか？」',
+            label: '「このレシピ、店のおすすめに推していいと思います」',
             outcome: ChoiceOutcome(
               label: '広める',
               affinityDelta: 2,
@@ -293,7 +293,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「今日の話、自分の案件で試してみます」',
+            label: '「今日の配合、家でも淹れてみます」',
             outcome: ChoiceOutcome(
               label: '実践',
               affinityDelta: 1,
@@ -303,8 +303,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.akari.6',
-      cgTitle: '五月の小会議室',
-      cgCaption: '手書きのレジュメと、誰かを待つホワイトボード。',
+      cgTitle: '五月のバックヤード',
+      cgCaption: '手書きのレシピノートと、味見を待つ小さなカップ。',
     ),
     GameEvent(
       id: 'ind.akari.7',
@@ -320,7 +320,7 @@ class IndividualEventCatalog {
           speaker: CharacterId.akari,
           expression: Expression.normal,
           text: '——遅くにごめんね。'
-              '昼間、言いそびれた話があって、いまなら言える気がして。',
+              'いま淹れてて、思いついた配合があって。いまなら言える気がして。',
         ),
       ],
       choice: EventChoiceScene(
@@ -335,7 +335,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「明日、もう一度、対面で聞かせてください」',
+            label: '「明日、その一杯、お店で飲ませてください」',
             outcome: ChoiceOutcome(
               label: '対面を選ぶ',
               affinityDelta: 3,
@@ -351,7 +351,7 @@ class IndividualEventCatalog {
   ];
 
   // ===========================================================================
-  // 久遠 詩（uta）— カフェ夜ライブ / 朝の珈琲
+  // 久遠 詩（uta）— 出版社編集者 / ゲラと朗読会 / 言葉
   // ===========================================================================
   static const List<GameEvent> _uta = [
     GameEvent(
@@ -361,19 +361,19 @@ class IndividualEventCatalog {
       requiredAffinityStage: 2,
       preferredSlot: 0, // morning
       title: '朝の常連扱い',
-      locationLabel: '通勤路のカフェ',
+      locationLabel: '通勤路の書店併設カフェ',
       script: [
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.smile,
-          text: 'おはようございます。今日もブレンド、深めの方でいいですか？',
+          text: 'おはようございます。今日も窓際の席、空いてますよ。',
         ),
-        EventLine(text: '注文を覚えてくれている。それだけで朝の始まりが少し違って感じる。'),
+        EventLine(text: '出社前にゲラを読むのが日課だという。席の好みまで覚えてくれている。'),
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.normal,
-          text: '今朝はね、外に小鳥が来てたんですよ。'
-              'お客さんが来る前って、わりとそういう時間で。',
+          text: '朝のうちに赤を入れておくと、頭が一番冴えてるんです。'
+              '始業前って、わりとそういう時間で。',
         ),
       ],
       choice: EventChoiceScene(
@@ -398,28 +398,28 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.uta.1',
-      cgTitle: '常連用のブレンド',
-      cgCaption: '湯気の向こうで「いつもの方で」と微笑む顔。',
+      cgTitle: '朝のゲラと珈琲',
+      cgCaption: '窓際の席で、ゲラに赤を入れながら微笑む顔。',
     ),
     GameEvent(
       id: 'ind.uta.2',
       category: EventCategory.individual,
       target: CharacterId.uta,
       requiredAffinityStage: 3,
-      title: 'カウンター越しの相談',
-      locationLabel: 'カフェの夕方',
+      title: 'テーブル越しの相談',
+      locationLabel: '夕方の書店併設カフェ',
       script: [
-        EventLine(text: '夕方、客のいないカウンターで、店長は珍しくぼんやりしていた。'),
+        EventLine(text: '夕方、原稿の束を前に、詩さんは珍しくぼんやりしていた。'),
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.troubled,
           text: '——実はね、今月、ちょっと厳しくて。'
-              'お店、続けるのに、いろいろ考えなきゃいけないことがある。',
+              '担当してる作家さんが、筆が止まっちゃって。締切も、部数も、宙ぶらりんで。',
         ),
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.normal,
-          text: 'ごめんなさい、お客さんに話すことじゃないですよね。'
+          text: 'ごめんなさい、外の人に話すことじゃないですよね。'
               '——でも、なんか、あなたには言いたかった。',
         ),
       ],
@@ -427,7 +427,7 @@ class IndividualEventCatalog {
         prompt: '何と返すか。',
         choices: [
           EventChoice(
-            label: '「お店、続けてほしいです。常連として」',
+            label: '「その本、出たら絶対読みます。一読者として」',
             outcome: ChoiceOutcome(
               label: '率直',
               affinityDelta: 2,
@@ -445,8 +445,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.uta.2',
-      cgTitle: '夕方のカウンター',
-      cgCaption: 'カウンターの内側で、ふと素顔を見せてくれた時間。',
+      cgTitle: '夕方の原稿の束',
+      cgCaption: '原稿越しに、ふと素顔を見せてくれた時間。',
     ),
     GameEvent(
       id: 'ind.uta.3',
@@ -454,23 +454,23 @@ class IndividualEventCatalog {
       target: CharacterId.uta,
       requiredAffinityStage: 3,
       requiredMonth: 8,
-      title: '閉店後の弾き語り',
-      locationLabel: '閉店後のカフェ',
+      title: '閉店後の朗読会',
+      locationLabel: '閉店後の書店',
       script: [
-        EventLine(text: '閉店の札が下げられたあとのカフェで、小さなライブが開かれた。'),
-        EventLine(text: '集まったのは10人ほど。詩さんはギターを抱えて、低い声で歌い始める。'),
+        EventLine(text: '閉店の札が下げられたあとの書店で、小さな朗読会が開かれた。'),
+        EventLine(text: '集まったのは10人ほど。詩さんは担当した本を抱えて、低い声で一節を読み始める。'),
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.smile,
           text: '——招いてよかった。来てくれて、ありがとう。',
         ),
-        EventLine(text: '1曲目は、自分で作ったという珈琲の歌だった。'),
+        EventLine(text: '読まれたのは、彼女が三年かけて世に出したという一冊の冒頭だった。'),
       ],
       choice: EventChoiceScene(
-        prompt: 'ライブ後、声をかける。',
+        prompt: '朗読後、声をかける。',
         choices: [
           EventChoice(
-            label: '「曲、レコードで欲しいくらいでした」',
+            label: '「あの一節、手元に置いておきたいくらいでした」',
             outcome: ChoiceOutcome(
               label: '素直',
               affinityDelta: 2,
@@ -478,7 +478,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「あの曲、もう一度聴かせてください」',
+            label: '「続き、もう一度読んでください」',
             outcome: ChoiceOutcome(
               label: '深く',
               affinityDelta: 1,
@@ -488,26 +488,26 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.uta.3',
-      cgTitle: '閉店後のライブ',
-      cgCaption: '10席だけのライブ、珈琲の歌を低い声で聴いた夜。',
+      cgTitle: '閉店後の朗読会',
+      cgCaption: '10人だけの朗読会、担当した本の一節を低い声で聴いた夜。',
     ),
     GameEvent(
       id: 'ind.uta.4',
       category: EventCategory.individual,
       target: CharacterId.uta,
       requiredAffinityStage: 4,
-      title: '配信、はじめます',
-      locationLabel: 'カフェの定休日',
+      title: '初めての企画書',
+      locationLabel: '休日の喫茶店',
       script: [
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.normal,
-          text: '定休日にごめんなさい。——あの、自分の曲、配信に出すことにしたんです。',
+          text: '休みの日にごめんなさい。——あの、初めて自分で企画した本、出すことになったんです。',
         ),
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.smile,
-          text: '誰にも言わずに出そうとしたんだけど、結局、誰かに言いたくなって。'
+          text: '誰にも言わずに進めようとしたんだけど、結局、誰かに言いたくなって。'
               'あなたが浮かんだ。',
         ),
       ],
@@ -515,7 +515,7 @@ class IndividualEventCatalog {
         prompt: 'どう応えるか。',
         choices: [
           EventChoice(
-            label: '「最初の1人になります。聴かせてください」',
+            label: '「最初の読者になります。読ませてください」',
             outcome: ChoiceOutcome(
               label: '伴走',
               affinityDelta: 2,
@@ -523,7 +523,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「いい曲だから、ちゃんと届くと思います」',
+            label: '「あなたが選んだ本だから、ちゃんと届くと思います」',
             outcome: ChoiceOutcome(
               label: '応援',
               affinityDelta: 3,
@@ -533,8 +533,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.uta.4',
-      cgTitle: '定休日のカウンター',
-      cgCaption: '誰もいない店内、ノートPCの上に置かれた「配信開始」の文字。',
+      cgTitle: '休日の企画書',
+      cgCaption: 'テーブルの上に置かれた、書きかけの「企画書」の一枚。',
     ),
     GameEvent(
       id: 'ind.uta.5',
@@ -542,28 +542,28 @@ class IndividualEventCatalog {
       target: CharacterId.uta,
       requiredAffinityStage: 4,
       requiredMonth: 12,
-      title: '冬の朝、いつもの一杯',
-      locationLabel: 'カフェの開店直前',
+      title: '冬の朝、見本誌',
+      locationLabel: '書店併設カフェの開店直前',
       script: [
         EventLine(text: '凍えるような朝、開店前のカフェにあたたかい湯気が漂っていた。'),
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.smile,
           text: '寒いですよね。よかったら、開店前に1杯どうぞ。'
-              '——今日はちょっと、特別な豆で淹れました。',
+              '——それと、これ。刷り上がったばかりの見本誌です。',
         ),
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.normal,
-          text: '配信のこと、応援してくれて、ありがとうございました。'
-              'お礼って言うほどじゃないですけど、これは私からの一杯です。',
+          text: '企画のこと、応援してくれて、ありがとうございました。'
+              'お礼って言うほどじゃないですけど、最初の一冊はあなたに。',
         ),
       ],
       choice: EventChoiceScene(
-        prompt: 'カップを受け取りながら、何と返すか。',
+        prompt: '見本誌を受け取りながら、何と返すか。',
         choices: [
           EventChoice(
-            label: '「ここの朝の一杯、当分やめられないですね」',
+            label: '「ここの朝の時間、当分やめられないですね」',
             outcome: ChoiceOutcome(
               label: '受け取る',
               affinityDelta: 3,
@@ -571,7 +571,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「次は——お礼じゃなくて、ふつうに飲みに来ます」',
+            label: '「次は——お礼じゃなくて、ふつうに会いに来ます」',
             outcome: ChoiceOutcome(
               label: '関係を選ぶ',
               affinityDelta: 2,
@@ -581,8 +581,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.uta.5',
-      cgTitle: '冬の朝の特別な一杯',
-      cgCaption: '開店前の店内、湯気の向こうで差し出された一杯。',
+      cgTitle: '冬の朝の見本誌',
+      cgCaption: '開店前の店内、湯気の向こうで差し出された一冊。',
     ),
     GameEvent(
       id: 'ind.uta.6',
@@ -590,22 +590,22 @@ class IndividualEventCatalog {
       target: CharacterId.uta,
       requiredAffinityStage: 2,
       preferredSlot: 2, // evening
-      title: '夕方の試作豆',
-      locationLabel: '夕方のカフェ',
+      title: '夕方のゲラ読み',
+      locationLabel: '夕方の書店併設カフェ',
       script: [
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.smile,
-          text: '今日、試作の豆が届いたんです。'
-              '——感想、聞かせてもらえますか？',
+          text: '今日、新しいゲラが出たんです。'
+              '——一読者として、感想を聞かせてもらえますか？',
         ),
-        EventLine(text: '小さなテイスティング用カップが2つ、カウンターに並んだ。'),
+        EventLine(text: '校正刷りの束が2つ、テーブルに並んだ。'),
       ],
       choice: EventChoiceScene(
-        prompt: '一口飲んでから、何と返すか。',
+        prompt: '一節読んでから、何と返すか。',
         choices: [
           EventChoice(
-            label: '「香り、いつもより少し青いですね」',
+            label: '「冒頭の一行、いつもより少し冷たいですね」',
             outcome: ChoiceOutcome(
               label: '言語化',
               affinityDelta: 2,
@@ -613,7 +613,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「これ、レギュラーにしてほしいです」',
+            label: '「これ、絶対に世に出してほしいです」',
             outcome: ChoiceOutcome(
               label: '即決',
               affinityDelta: 3,
@@ -623,8 +623,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.uta.6',
-      cgTitle: '夕方の試作テイスティング',
-      cgCaption: '小さなカップ2つと、夕方のカウンターに広がる豆の香り。',
+      cgTitle: '夕方のゲラ読み',
+      cgCaption: '校正刷りの束2つと、夕方のテーブルに広がるインクの匂い。',
     ),
     GameEvent(
       id: 'ind.uta.7',
@@ -639,8 +639,8 @@ class IndividualEventCatalog {
         EventLine(
           speaker: CharacterId.uta,
           expression: Expression.smile,
-          text: '——お店、明日は早じまいします。'
-              'よかったら、ふつうのお客じゃなくて、一緒に歩きませんか。',
+          text: '——明日は、珍しく定時で上がれそうなんです。'
+              'よかったら、担当作家でも一読者でもなく、一緒に歩きませんか。',
         ),
       ],
       choice: EventChoiceScene(
@@ -655,7 +655,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「店じまい、手伝います。それから」',
+            label: '「校了、手伝います。それから」',
             outcome: ChoiceOutcome(
               label: '伴走',
               affinityDelta: 2,
@@ -671,7 +671,7 @@ class IndividualEventCatalog {
   ];
 
   // ===========================================================================
-  // 鴻巣 透（toru）— 論理的選択 / ソロキャンプ
+  // 鴻巣 透（toru）— スポーツメーカー営業 / 製品テスト / 論理的な提案
   // ===========================================================================
   static const List<GameEvent> _toru = [
     GameEvent(
@@ -679,17 +679,17 @@ class IndividualEventCatalog {
       category: EventCategory.individual,
       target: CharacterId.toru,
       requiredAffinityStage: 2,
-      title: 'チャットの返信、早すぎる',
-      locationLabel: '退社後のチャット画面',
+      title: 'メールの返信、早すぎる',
+      locationLabel: '退社後のメール画面',
       script: [
-        EventLine(text: '退社して数分、業務チャットが鳴った。'),
+        EventLine(text: '退社して数分、仕事のメールが届いた。'),
         EventLine(
           speaker: CharacterId.toru,
           expression: Expression.normal,
-          text: '昼間の件、整理し直しました。添付の構成図、見てもらえますか。'
+          text: '昼間の件、提案書を作り直しました。添付の見積り、見てもらえますか。'
               '今夜じゃなくていいです。',
         ),
-        EventLine(text: '——たぶん、退社後すぐに自宅で書き直したんだろう。スピードと丁寧さが両立している。'),
+        EventLine(text: '——たぶん、退社後すぐに直したんだろう。フットワークの軽さと丁寧さが両立している。'),
       ],
       choice: EventChoiceScene(
         prompt: '返信に何を添えるか。',
@@ -703,7 +703,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「今読みました。ここの分岐だけ気になります」',
+            label: '「今読みました。この納入条件だけ気になります」',
             outcome: ChoiceOutcome(
               label: '即応',
               affinityDelta: 3,
@@ -713,8 +713,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.toru.1',
-      cgTitle: '夜の構成図',
-      cgCaption: '退社直後に送られてきた、丁寧に作り直された構成図。',
+      cgTitle: '夜の提案書',
+      cgCaption: '退社直後に送られてきた、丁寧に作り直された提案書。',
     ),
     GameEvent(
       id: 'ind.toru.2',
@@ -722,19 +722,19 @@ class IndividualEventCatalog {
       target: CharacterId.toru,
       requiredAffinityStage: 3,
       title: '線引きの話',
-      locationLabel: '打ち合わせ後の休憩室',
+      locationLabel: '商談後の休憩スペース',
       script: [
         EventLine(
           speaker: CharacterId.toru,
           expression: Expression.troubled,
           text: '——あの、ちょっと、前の話で。'
-              '会議のあと、いつもより少し早めに帰らせてください。',
+              '商談のあと、いつもより少し早めに上がらせてください。',
         ),
         EventLine(text: '声のトーンが、いつもより少し低い。'),
         EventLine(
           speaker: CharacterId.toru,
           expression: Expression.normal,
-          text: '前の職場で、線引きを誤って、結構しんどい時期があったんです。'
+          text: '前の職場で、数字に追われて線引きを誤って、結構しんどい時期があったんです。'
               '今はそれを繰り返したくない。',
         ),
       ],
@@ -750,7 +750,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「鴻巣さんが安全に働ける方を、最優先で」',
+            label: '「鴻巣さんが無理なく走れる方を、最優先で」',
             outcome: ChoiceOutcome(
               label: '配慮',
               affinityDelta: 1,
@@ -760,7 +760,7 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.toru.2',
-      cgTitle: '休憩室の窓辺',
+      cgTitle: '休憩スペースの窓辺',
       cgCaption: '窓の外を見ながら、過去の話を少しだけ聞かせてくれた時間。',
     ),
     GameEvent(
@@ -769,20 +769,20 @@ class IndividualEventCatalog {
       target: CharacterId.toru,
       requiredAffinityStage: 3,
       requiredMonth: 9,
-      title: '論理的な納期調整',
-      locationLabel: 'オンライン会議',
+      title: '論理的な納品調整',
+      locationLabel: 'オンライン商談',
       script: [
         EventLine(text: '画面の中、鴻巣さんは資料を共有しながら淡々と話している。'),
         EventLine(
           speaker: CharacterId.toru,
           expression: Expression.normal,
-          text: '結論、納期を1週間ずらせば、品質・人員・コスト、どれも安全圏に入ります。'
+          text: '結論、納品を1週間ずらせば、在庫・価格・配送、どれも安全圏に入ります。'
               '判断はそちらに委ねますが、根拠は3点あります。',
         ),
-        EventLine(text: '——感情ではなく、根拠で動く人。だからこそ、信頼できる。'),
+        EventLine(text: '——勢いではなく、根拠で売る人。だからこそ、信頼できる。'),
       ],
       choice: EventChoiceScene(
-        prompt: '会議の最後、何と返すか。',
+        prompt: '商談の最後、何と返すか。',
         choices: [
           EventChoice(
             label: '「3点とも納得です。1週間ずらしましょう」',
@@ -793,7 +793,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「持ち帰って、社内で擦り合わせます」',
+            label: '「持ち帰って、店舗側と擦り合わせます」',
             outcome: ChoiceOutcome(
               label: '慎重',
               affinityDelta: 1,
@@ -811,15 +811,15 @@ class IndividualEventCatalog {
       category: EventCategory.individual,
       target: CharacterId.toru,
       requiredAffinityStage: 4,
-      title: 'ソロキャンプの写真',
+      title: '製品テストの写真',
       locationLabel: 'チャットの画像',
       script: [
         EventLine(text: '週末、チャットに画像が1枚だけ送られてきた。'),
-        EventLine(text: '焚き火、コーヒー、組み立て式のテーブル。背景は静かな湖。'),
+        EventLine(text: '新作のランニングシューズ、コーヒーのボトル、河原のトレイル。背景は朝の山並み。'),
         EventLine(
           speaker: CharacterId.toru,
           expression: Expression.normal,
-          text: '休んでます、というだけの報告です。'
+          text: '新作の試走です、というだけの報告です。'
               '——次の打ち合わせ、月曜の朝でいいですか。',
         ),
       ],
@@ -835,7 +835,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「いつか、そういう静かな場所、教えてください」',
+            label: '「いつか、そのコース、一緒に走らせてください」',
             outcome: ChoiceOutcome(
               label: '関心',
               affinityDelta: 1,
@@ -845,8 +845,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.toru.4',
-      cgTitle: '湖と焚き火',
-      cgCaption: 'チャットに1枚だけ届いた、静かな週末の景色。',
+      cgTitle: 'トレイルと新作シューズ',
+      cgCaption: 'チャットに1枚だけ届いた、静かな週末の試走の景色。',
     ),
     GameEvent(
       id: 'ind.toru.5',
@@ -862,7 +862,7 @@ class IndividualEventCatalog {
           speaker: CharacterId.toru,
           expression: Expression.normal,
           text: '仕事と関係ない話、すみません。'
-              '——前に話した「線引き」の件、今のチームでは大丈夫みたいです。',
+              '——前に話した「線引き」の件、今の働き方なら大丈夫みたいです。',
         ),
         EventLine(
           speaker: CharacterId.toru,
@@ -902,15 +902,15 @@ class IndividualEventCatalog {
       target: CharacterId.toru,
       requiredAffinityStage: 3,
       requiredMonth: 11,
-      title: '秋の納品トラブル',
+      title: '秋の展示会トラブル',
       locationLabel: 'オンライン緊急通話',
       script: [
-        EventLine(text: '深夜の納品直前、画面の中で鴻巣さんが資料を共有している。'),
+        EventLine(text: '展示会の搬入直前、画面の中で鴻巣さんが資料を共有している。'),
         EventLine(
           speaker: CharacterId.toru,
           expression: Expression.troubled,
           text: '——いま、こちらで止まってる箇所、3つ。'
-              '1つだけ、判断、頼んでもいいですか。',
+              '在庫の振り分け、1つだけ、判断、頼んでもいいですか。',
         ),
       ],
       choice: EventChoiceScene(
@@ -959,7 +959,7 @@ class IndividualEventCatalog {
         prompt: '何を話題にする？',
         choices: [
           EventChoice(
-            label: '「キャンプの装備、見せてくれません？」',
+            label: '「新作シューズ、見せてくれません？」',
             outcome: ChoiceOutcome(
               label: '趣味',
               affinityDelta: 2,
@@ -983,7 +983,7 @@ class IndividualEventCatalog {
   ];
 
   // ===========================================================================
-  // 蓮見 紗夜（sayo）— 雨の日の廊下 / 紅茶と猫
+  // 蓮見 紗夜（sayo）— デザイナー / 夜のアトリエ / 紅茶と猫
   // ===========================================================================
   static const List<GameEvent> _sayo = [
     GameEvent(
@@ -992,10 +992,10 @@ class IndividualEventCatalog {
       target: CharacterId.sayo,
       requiredAffinityStage: 2,
       preferredSlot: 3, // night
-      title: '深夜のエレベーター',
-      locationLabel: 'マンションの深夜の廊下',
+      title: '深夜のコワーキング',
+      locationLabel: '深夜のコワーキングスペース',
       script: [
-        EventLine(text: '日付が変わったころ、エレベーターを降りると、紗夜さんが郵便受けの前に立っていた。'),
+        EventLine(text: '日付が変わったころ、給湯コーナーに行くと、紗夜さんがモニターの光の前に座っていた。'),
         EventLine(
           speaker: CharacterId.sayo,
           expression: Expression.normal,
@@ -1005,7 +1005,7 @@ class IndividualEventCatalog {
         EventLine(
           speaker: CharacterId.sayo,
           expression: Expression.smile,
-          text: '私は夜型だから、こういう時間に廊下で会うと、なんだか嬉しい。',
+          text: '私は夜型だから、こういう時間にここで会うと、なんだか嬉しい。',
         ),
       ],
       choice: EventChoiceScene(
@@ -1030,8 +1030,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.sayo.1',
-      cgTitle: '深夜の郵便受け',
-      cgCaption: '日付が変わる頃、廊下の灯りの下で交わした静かな挨拶。',
+      cgTitle: '深夜の給湯コーナー',
+      cgCaption: '日付が変わる頃、モニターの光の前で交わした静かな挨拶。',
     ),
     GameEvent(
       id: 'ind.sayo.2',
@@ -1039,13 +1039,13 @@ class IndividualEventCatalog {
       target: CharacterId.sayo,
       requiredAffinityStage: 3,
       title: '紅茶と猫',
-      locationLabel: '隣室のリビング',
+      locationLabel: '紗夜さんのアトリエ',
       script: [
-        EventLine(text: '招かれて入った隣の部屋は、本棚と紅茶缶でいっぱいだった。'),
+        EventLine(text: '招かれて入ったアトリエは、色見本と作品集、それに紅茶缶でいっぱいだった。'),
         EventLine(
           speaker: CharacterId.sayo,
           expression: Expression.smile,
-          text: '物はあんまり買わないんだけど、本と紅茶だけはね、つい。'
+          text: '物はあんまり買わないんだけど、作品集と紅茶だけはね、つい。'
               '——あ、その子は人見知りだから、無理に撫でなくていいから。',
         ),
         EventLine(text: '足元で、三毛猫がゆっくりと尻尾を動かしている。'),
@@ -1062,7 +1062,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「本棚、見ていてもいいですか？」',
+            label: '「その作品集、見ていてもいいですか？」',
             outcome: ChoiceOutcome(
               label: '深く知る',
               affinityDelta: 1,
@@ -1072,7 +1072,7 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.sayo.2',
-      cgTitle: '本棚と紅茶缶',
+      cgTitle: '作品集と紅茶缶',
       cgCaption: '足元でゆっくり尻尾を振る三毛猫と、湯気の立つカップ。',
     ),
     GameEvent(
@@ -1081,10 +1081,10 @@ class IndividualEventCatalog {
       target: CharacterId.sayo,
       requiredAffinityStage: 3,
       requiredMonth: 6,
-      title: '雨の日の廊下',
-      locationLabel: 'マンションの共用廊下',
+      title: '雨の日の窓辺',
+      locationLabel: 'コワーキングの窓辺',
       script: [
-        EventLine(text: '梅雨の夕方、廊下の窓に雨が叩きつけている。'),
+        EventLine(text: '梅雨の夕方、仕事場の窓に雨が叩きつけている。'),
         EventLine(
           speaker: CharacterId.sayo,
           expression: Expression.troubled,
@@ -1121,7 +1121,7 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.sayo.3',
-      cgTitle: '雨の窓と廊下',
+      cgTitle: '雨の窓辺',
       cgCaption: '梅雨の夕方、雨の音と一緒に聞いた小さな打ち明け話。',
     ),
     GameEvent(
@@ -1129,14 +1129,14 @@ class IndividualEventCatalog {
       category: EventCategory.individual,
       target: CharacterId.sayo,
       requiredAffinityStage: 4,
-      title: '締切前夜の手伝い',
-      locationLabel: '隣室の仕事机',
+      title: '入稿前夜の差し入れ',
+      locationLabel: 'アトリエの作業机',
       script: [
-        EventLine(text: '翻訳の締切前夜。隣室から、紅茶を取りに来てとメッセージが来た。'),
+        EventLine(text: 'デザインの入稿前夜。アトリエから、紅茶を淹れに来てとメッセージが来た。'),
         EventLine(
           speaker: CharacterId.sayo,
           expression: Expression.troubled,
-          text: '——ごめん、もう紅茶が淹れられない手の状態で。'
+          text: '——ごめん、もう手がペンタブから離せない状態で。'
               'お湯だけ、お願いしていい？',
         ),
         EventLine(
@@ -1167,8 +1167,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.sayo.4',
-      cgTitle: '締切前夜の机',
-      cgCaption: 'キーボードの隣、湯気の立つ紅茶と原稿用紙の山。',
+      cgTitle: '入稿前夜の机',
+      cgCaption: 'ペンタブの隣、湯気の立つ紅茶と色見本の山。',
     ),
     GameEvent(
       id: 'ind.sayo.5',
@@ -1176,8 +1176,8 @@ class IndividualEventCatalog {
       target: CharacterId.sayo,
       requiredAffinityStage: 4,
       requiredMonth: 6,
-      title: '雨の上がった廊下',
-      locationLabel: 'マンションの共用廊下',
+      title: '雨の上がった窓辺',
+      locationLabel: 'コワーキングの窓辺',
       script: [
         EventLine(text: '長く降った雨が、夜中にようやく上がった。'),
         EventLine(
@@ -1190,14 +1190,14 @@ class IndividualEventCatalog {
           speaker: CharacterId.sayo,
           expression: Expression.normal,
           text: '次の梅雨も、たぶん、私はちょっとへこむ。'
-              'そのときは、また廊下で会いましょう。',
+              'そのときは、また、ここで会いましょう。',
         ),
       ],
       choice: EventChoiceScene(
         prompt: '何と返すか。',
         choices: [
           EventChoice(
-            label: '「廊下じゃなくて、家でもいいですよ」',
+            label: '「ここじゃなくて、アトリエでもいいですよ」',
             outcome: ChoiceOutcome(
               label: '一歩進む',
               affinityDelta: 3,
@@ -1215,7 +1215,7 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.sayo.5',
-      cgTitle: '雨上がりの廊下',
+      cgTitle: '雨上がりの窓辺',
       cgCaption: '長雨が止んだ夜、窓の外で街灯の光が静かに揺れていた。',
     ),
     GameEvent(
@@ -1224,22 +1224,22 @@ class IndividualEventCatalog {
       target: CharacterId.sayo,
       requiredAffinityStage: 2,
       preferredSlot: 3, // night
-      title: '夜の本貸し',
-      locationLabel: 'マンションの廊下',
+      title: '夜の作品集貸し',
+      locationLabel: '夜のアトリエ前',
       script: [
         EventLine(
           speaker: CharacterId.sayo,
           expression: Expression.smile,
           text: '——夜遅くにごめんなさい。'
-              'この本、読み終わったから、よかったら。返却はいつでも。',
+              'この画集、見終わったから、よかったら。返却はいつでも。',
         ),
-        EventLine(text: '差し出されたのは、紙の手触りが優しい1冊の文庫本だった。'),
+        EventLine(text: '差し出されたのは、紙の手触りが優しい1冊の作品集だった。'),
       ],
       choice: EventChoiceScene(
         prompt: '受け取りながら、何と返すか。',
         choices: [
           EventChoice(
-            label: '「読み終わったら、感想、長めに書きます」',
+            label: '「見終わったら、感想、長めに書きます」',
             outcome: ChoiceOutcome(
               label: '丁寧',
               affinityDelta: 2,
@@ -1247,7 +1247,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「読み終えたら、紅茶のお礼に伺います」',
+            label: '「見終えたら、紅茶のお礼に伺います」',
             outcome: ChoiceOutcome(
               label: '関係を進める',
               affinityDelta: 3,
@@ -1257,8 +1257,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.sayo.6',
-      cgTitle: '夜の貸し本',
-      cgCaption: '廊下の灯りの下で受け取った、ひっそりした1冊。',
+      cgTitle: '夜の貸し画集',
+      cgCaption: 'アトリエの灯りの下で受け取った、ひっそりした1冊。',
     ),
     GameEvent(
       id: 'ind.sayo.7',
@@ -1266,10 +1266,10 @@ class IndividualEventCatalog {
       target: CharacterId.sayo,
       requiredAffinityStage: 3,
       requiredMonth: 2,
-      title: '冬の紅茶配達',
-      locationLabel: 'マンションのドア越し',
+      title: '冬の紅茶の差し入れ',
+      locationLabel: 'コワーキングのデスク越し',
       script: [
-        EventLine(text: '凍えるような夜、玄関のドアを軽くノックする音。'),
+        EventLine(text: '凍えるような夜、デスクの仕切りを軽くノックする音。'),
         EventLine(
           speaker: CharacterId.sayo,
           expression: Expression.normal,
@@ -1290,7 +1290,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「中で、一緒に淹れません？」',
+            label: '「アトリエで、一緒に淹れません？」',
             outcome: ChoiceOutcome(
               label: '一歩進む',
               affinityDelta: 3,
@@ -1301,12 +1301,12 @@ class IndividualEventCatalog {
       ),
       cgKey: 'cg.ind.sayo.7',
       cgTitle: '冬のおすそ分け',
-      cgCaption: '玄関先のティーバッグと、冷たい指先の温度。',
+      cgCaption: 'デスク越しのティーバッグと、冷たい指先の温度。',
     ),
   ];
 
   // ===========================================================================
-  // 槙原 結衣（yui）— ジム朝練 / 草大会の応援
+  // 槙原 結衣（yui）— 楽器店スタッフ / 試奏とライブ / バンド
   // ===========================================================================
   static const List<GameEvent> _yui = [
     GameEvent(
@@ -1314,28 +1314,28 @@ class IndividualEventCatalog {
       category: EventCategory.individual,
       target: CharacterId.yui,
       requiredAffinityStage: 2,
-      title: '朝練のあとのプロテイン',
-      locationLabel: '週末通うジムのラウンジ',
+      title: '試奏のあとの一杯',
+      locationLabel: '楽器店のスタッフルーム',
       script: [
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.smile,
-          text: 'お疲れさまでした！ プロテイン、私からのおごりです。'
-              '——いつも来てくれてるお礼。',
+          text: 'お疲れさまでした！ これ、私からのおごりです。'
+              '——いつも試奏に付き合ってくれてるお礼。',
         ),
-        EventLine(text: '汗を拭きながら、結衣さんはいつもより少し饒舌だった。'),
+        EventLine(text: 'カウンター裏で、結衣さんは缶を差し出しながらいつもより少し饒舌だった。'),
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.normal,
-          text: '続けてくれる人がいるとね、こっちもやる気が違うんですよ。'
+          text: '弾いてくれる人がいるとね、こっちも紹介のしがいが違うんですよ。'
               'ほんとに。',
         ),
       ],
       choice: EventChoiceScene(
-        prompt: 'プロテインを受け取りながら何と返すか。',
+        prompt: '一杯を受け取りながら何と返すか。',
         choices: [
           EventChoice(
-            label: '「結衣さんのプログラム、続けやすいから」',
+            label: '「結衣さんが選んでくれる楽器、弾きやすいから」',
             outcome: ChoiceOutcome(
               label: '率直',
               affinityDelta: 2,
@@ -1353,35 +1353,35 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.yui.1',
-      cgTitle: 'ラウンジのプロテイン',
-      cgCaption: 'トレーニング後のラウンジ、おごってくれた小さなコップ。',
+      cgTitle: 'スタッフルームの一杯',
+      cgCaption: '試奏のあとのスタッフルーム、おごってくれた小さな缶。',
     ),
     GameEvent(
       id: 'ind.yui.2',
       category: EventCategory.individual,
       target: CharacterId.yui,
       requiredAffinityStage: 3,
-      title: '元アスリートの話',
-      locationLabel: 'ジムの隅のベンチ',
+      title: '元バンドの話',
+      locationLabel: '楽器店の試奏ブース',
       script: [
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.troubled,
-          text: '——前にね、競技、やってたんです。'
-              'そこそこいい線まで行って、だけど、最後の大会で、ぜんぜん勝てなくて。',
+          text: '——前にね、バンド、やってたんです。'
+              'そこそこいい線まで行って、だけど、最後のライブで、ぜんぜん鳴らせなくて。',
         ),
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.normal,
-          text: '今は、別の形で勝負したい。'
-              'SNSでフォロワー集めてるのも、その延長線。だから、続けたい。',
+          text: '今は、別の形で音楽に関わりたい。'
+              'お店のSNSで弾いてみた動画を上げてるのも、その延長線。だから、続けたい。',
         ),
       ],
       choice: EventChoiceScene(
         prompt: 'どう返すか。',
         choices: [
           EventChoice(
-            label: '「結衣さんのトレーニング、ちゃんと結果出てます」',
+            label: '「結衣さんの紹介で楽器を始めた人、ちゃんといます」',
             outcome: ChoiceOutcome(
               label: '事実で返す',
               affinityDelta: 2,
@@ -1399,8 +1399,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.yui.2',
-      cgTitle: 'ジムの隅のベンチ',
-      cgCaption: 'タオルを首にかけて、過去の話を少しだけ聞かせてくれた時間。',
+      cgTitle: '試奏ブースの隅',
+      cgCaption: 'ギターを抱えたまま、過去の話を少しだけ聞かせてくれた時間。',
     ),
     GameEvent(
       id: 'ind.yui.3',
@@ -1408,29 +1408,29 @@ class IndividualEventCatalog {
       target: CharacterId.yui,
       requiredAffinityStage: 3,
       requiredMonth: 10,
-      title: '草大会の応援',
-      locationLabel: '河川敷のグラウンド',
+      title: '路上ライブの応援',
+      locationLabel: '駅前の小さな野外ステージ',
       script: [
-        EventLine(text: '秋晴れの河川敷。トラックの脇で、結衣さんが軽くストレッチしている。'),
+        EventLine(text: '秋晴れの駅前広場。小さなステージの脇で、結衣さんがギターを抱え直している。'),
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.smile,
-          text: '見に来てくれて、ありがとう！ 草大会だけど、'
-              '——けっこう、本気で走ります。',
+          text: '見に来てくれて、ありがとう！ お店主催の路上ライブだけど、'
+              '——けっこう、本気で弾きます。',
         ),
-        EventLine(text: 'スタートの号砲が鳴る。フォームが整っていて、見ていてまっすぐ気持ちが良い。'),
+        EventLine(text: '最初の一音が鳴る。指の運びが滑らかで、聴いていてまっすぐ気持ちが良い。'),
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.normal,
           text: '——ありがとう。'
-              '誰かが見てる、っていうだけで、こんなに走れるんだって、はじめて分かった。',
+              '誰かが聴いてる、っていうだけで、こんなに弾けるんだって、はじめて分かった。',
         ),
       ],
       choice: EventChoiceScene(
-        prompt: 'ゴール後、何と声をかけるか。',
+        prompt: '演奏後、何と声をかけるか。',
         choices: [
           EventChoice(
-            label: '「めちゃくちゃ速かったです」',
+            label: '「めちゃくちゃ良かったです」',
             outcome: ChoiceOutcome(
               label: '事実',
               affinityDelta: 3,
@@ -1438,7 +1438,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「これからも、見に来ます」',
+            label: '「これからも、聴きに来ます」',
             outcome: ChoiceOutcome(
               label: '約束',
               affinityDelta: 2,
@@ -1448,8 +1448,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.yui.3',
-      cgTitle: '河川敷のスタートライン',
-      cgCaption: '秋晴れの河川敷、ゴールで振り返って手を上げてくれた瞬間。',
+      cgTitle: '駅前のステージ',
+      cgCaption: '秋晴れの駅前広場、弾き終えて振り返り手を上げてくれた瞬間。',
     ),
     GameEvent(
       id: 'ind.yui.4',
@@ -1457,18 +1457,18 @@ class IndividualEventCatalog {
       target: CharacterId.yui,
       requiredAffinityStage: 4,
       title: 'SNSの裏側',
-      locationLabel: 'ジム閉店後のロビー',
+      locationLabel: '閉店後の楽器店',
       script: [
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.troubled,
-          text: 'SNSってね、数字が伸びると嬉しいんだけど、'
+          text: 'お店の演奏動画ってね、再生数が伸びると嬉しいんだけど、'
               'ときどき、心が削れるコメントも来るんです。',
         ),
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.normal,
-          text: 'こういう話、トレーナーは普通お客さんにしないんだけど。'
+          text: 'こういう話、店員は普通お客さんにしないんだけど。'
               '——あなたには、なんか、言える。',
         ),
       ],
@@ -1494,8 +1494,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.yui.4',
-      cgTitle: '閉店後のロビー',
-      cgCaption: '消灯前のロビー、スマホを見ながらぽつりとこぼした本音。',
+      cgTitle: '閉店後の店内',
+      cgCaption: '消灯前の店内、スマホを見ながらぽつりとこぼした本音。',
     ),
     GameEvent(
       id: 'ind.yui.5',
@@ -1504,19 +1504,19 @@ class IndividualEventCatalog {
       requiredAffinityStage: 4,
       requiredMonth: 3,
       title: '次の春の目標',
-      locationLabel: '河川敷の朝',
+      locationLabel: '開店前の楽器店',
       script: [
-        EventLine(text: '春の朝、結衣さんは河川敷を軽くジョグしていた。'),
+        EventLine(text: '春の朝、結衣さんは開店前の店内で軽く弦を鳴らしていた。'),
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.smile,
-          text: '次の大会、出ます。'
-              '——勝つためじゃなくて、最後まで気持ちよく走るために。',
+          text: '次の音楽フェス、出ます。'
+              '——勝つためじゃなくて、最後まで気持ちよく弾くために。',
         ),
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.normal,
-          text: 'あなたが見てる、っていう前提で、たぶん私はもう走れる。'
+          text: 'あなたが聴いてる、っていう前提で、たぶん私はもう弾ける。'
               'それでいい？',
         ),
       ],
@@ -1524,7 +1524,7 @@ class IndividualEventCatalog {
         prompt: '何と返すか。',
         choices: [
           EventChoice(
-            label: '「次の大会も、絶対見に行きます」',
+            label: '「次のフェスも、絶対聴きに行きます」',
             outcome: ChoiceOutcome(
               label: '伴走',
               affinityDelta: 3,
@@ -1532,7 +1532,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「——一緒に、走ってもいいですか」',
+            label: '「——一緒に、ステージに立ってもいいですか」',
             outcome: ChoiceOutcome(
               label: '関係を選ぶ',
               affinityDelta: 2,
@@ -1542,8 +1542,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.yui.5',
-      cgTitle: '春の朝の河川敷',
-      cgCaption: '春の朝、軽いジョグの横を歩きながら次の目標を聞いた時間。',
+      cgTitle: '春の朝の楽器店',
+      cgCaption: '春の朝、弦の音の横で次の目標を聞いた時間。',
     ),
     GameEvent(
       id: 'ind.yui.6',
@@ -1551,18 +1551,18 @@ class IndividualEventCatalog {
       target: CharacterId.yui,
       requiredAffinityStage: 3,
       requiredMonth: 8,
-      title: '夏の朝練プラン',
-      locationLabel: 'ジムのホワイトボード',
+      title: '夏のバンド練習プラン',
+      locationLabel: '楽器店のスタジオ',
       script: [
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.smile,
-          text: '——夏は5時起き、川沿いを30分。これ、一緒にやらない？',
+          text: '——夏は朝のスタジオを30分。夏フェスに向けて、これ、一緒にやらない？',
         ),
-        EventLine(text: 'ホワイトボードに描かれているのは、季節ごとに区切られたメニュー表。'),
+        EventLine(text: 'ホワイトボードに描かれているのは、季節ごとに区切られた練習スケジュール表。'),
       ],
       choice: EventChoiceScene(
-        prompt: 'メニューを見ながら、どう返すか。',
+        prompt: 'スケジュールを見ながら、どう返すか。',
         choices: [
           EventChoice(
             label: '「やります。続ける自信、もらいに来ます」',
@@ -1583,7 +1583,7 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.yui.6',
-      cgTitle: '夏のメニュー表',
+      cgTitle: '夏の練習スケジュール',
       cgCaption: '色分けされたホワイトボードと、夏の早朝の予定。',
     ),
     GameEvent(
@@ -1592,22 +1592,22 @@ class IndividualEventCatalog {
       target: CharacterId.yui,
       requiredAffinityStage: 4,
       preferredSlot: 0, // morning
-      title: '朝の伴走',
-      locationLabel: '河川敷の朝',
+      title: '朝のセッション',
+      locationLabel: '開店前のスタジオ',
       script: [
-        EventLine(text: '冷えた朝、待ち合わせの河川敷に向かうと、彼女はすでに軽くアップしていた。'),
+        EventLine(text: '冷えた朝、待ち合わせのスタジオに向かうと、彼女はすでに軽くチューニングしていた。'),
         EventLine(
           speaker: CharacterId.yui,
           expression: Expression.normal,
-          text: '——今日は、私のペースじゃなくて、'
-              'あなたのペースで走ってみたい。',
+          text: '——今日は、私のテンポじゃなくて、'
+              'あなたのテンポに合わせてみたい。',
         ),
       ],
       choice: EventChoiceScene(
-        prompt: '走り出しながら、どう返すか。',
+        prompt: '弾き出しながら、どう返すか。',
         choices: [
           EventChoice(
-            label: '「ゆっくり、足音が揃うところまで」',
+            label: '「ゆっくり、音が揃うところまで」',
             outcome: ChoiceOutcome(
               label: '伴走',
               affinityDelta: 2,
@@ -1615,7 +1615,7 @@ class IndividualEventCatalog {
             ),
           ),
           EventChoice(
-            label: '「最後だけ、ちょっとだけ追います」',
+            label: '「最後のサビだけ、ちょっとだけ攻めます」',
             outcome: ChoiceOutcome(
               label: '挑戦',
               affinityDelta: 3,
@@ -1625,8 +1625,8 @@ class IndividualEventCatalog {
         ],
       ),
       cgKey: 'cg.ind.yui.7',
-      cgTitle: '朝の伴走',
-      cgCaption: '冷えた河川敷、足音を揃える練習をした朝。',
+      cgTitle: '朝のセッション',
+      cgCaption: '冷えたスタジオ、音を揃える練習をした朝。',
     ),
   ];
 }
