@@ -133,31 +133,30 @@ BGM と同一の `assets/audio/` ディレクトリを共有するため、pubsp
 
 #### 立ち絵 部分投入 / 仮素材差替えの最小手順
 
-⚠️ **音声と性質が異なる（背景と同じ）。** `CharacterPortrait` は現状
-`Container`（themeColor 円 + イニシャル + 表情アイコン）で擬似描画し、`Image.asset` を
-一切呼んでいない。そのため「立ち絵が無い／一部だけ」の状態でも **実行時依存はゼロ＝
-クラッシュしない**（参照していないため try/catch も不要）。
+✅ **`Image.asset` 化 + `errorBuilder` フォールバック実装済み（feat/character-assets）。**
+`pubspec.yaml` の `- assets/characters/` は **有効化済み**。`CharacterPortrait` は
+非シルエット時に `assets/characters/<id>_<expression>.png` を円形クリップで描画し、
+未投入 / 欠損時は `errorBuilder` で従来のイニシャル円へ自動フォールバックする。
+そのため **立ち絵が無い／一部だけの状態でもクラッシュしない**。投入はファイルを置くだけ。
 
 1. `assets/characters/` に投入できる分だけ `<id>_<expression>.png`（透過 PNG）を配置。
    キャラ単位（例: akari の 3 表情のみ）でも表情単位でも部分投入可。
-2. `pubspec.yaml` の `flutter.assets:` の `- assets/characters/` 行を解除。
-   - 現状ディレクトリは `.gitkeep` / `README.md` のみで非空のため、`flutter pub get` /
-     build は **エラーにならない**（無関係ファイルがバンドルされるだけ）。
-3. `flutter pub get` を実行。**この段階では立ち絵はプレースホルダのままで画像は出ない**
-   （コードがまだ `Image.asset` を呼んでいないため。pubspec 解除だけでは描画は変わらない）。
-4. 実画像を反映するには `lib/widgets/character_portrait.dart` の差替えが必要（下記）。
-   このとき **必ず `errorBuilder` で現行プレースホルダ（円 + イニシャル）へフォールバック**
-   させること。立ち絵には欠損ガードが無いため、未投入ファイルを直接 `Image.asset` すると
-   当該キャラ/表情が例外/灰色になる。フォールバックを付ければ部分投入でも安全。
-5. 仮素材を差し替えるときはファイル名そのままで上書きすれば、次回起動から反映される。
+2. `flutter pub get` を実行（`pubspec` は有効化済みなので追加編集は不要）。
+3. アプリを再起動 → 投入済みのキャラ/表情は実画像、未投入分はイニシャル円で表示される。
+4. 仮素材を差し替えるときはファイル名そのままで上書きすれば、次回起動から反映される。Dart 変更不要。
 
-#### 立ち絵の差替えポイント（コード側）
+> 注: 未会いキャラの一覧は `isSilhouette` 表示のままで、実画像を読み込まない（絵が漏れない）。
 
-`lib/widgets/character_portrait.dart` の `build` 内 `Stack`（円 Container + Text +
-表情アイコン）を
-`Image.asset('assets/characters/${character.id.name}_${expression.name}.png', errorBuilder: 現行プレースホルダ)`
-に置換する。`isSilhouette` 分岐・`AnimatedSwitcher`（200ms クロスフェード）・`_expressionIcon`
-はフォールバック用に残す。`size` は透過画像の表示枠としてそのまま使える。
+#### 立ち絵の差替えポイント（コード側・実装済み）
+
+`lib/widgets/character_portrait.dart` の `build` 内、基部の円 `Container`
+（`clipBehavior: Clip.antiAlias`）の子を
+`Image.asset(CharacterPortrait.assetPathForExpression(character, expression), fit: BoxFit.cover, gaplessPlayback: true, errorBuilder: _initialLabel)`
+にしている。
+- パス生成は静的メソッド `CharacterPortrait.assetPathForExpression(character, expression)`（テスト対象）。
+- フォールバックはイニシャル 1 文字の `_initialLabel`。`isSilhouette` 分岐・
+  `AnimatedSwitcher`（200ms クロスフェード）・表情バッジ `_expressionIcon` は維持。
+- root キー `characterPortrait.<id>.<expression|silhouette>` と表情バッジキーは維持（既存テスト互換）。
 
 #### 立ち絵投入時の検証ポイント
 
