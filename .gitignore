@@ -53,3 +53,10 @@ app.*.map.json
 
 # Claude Code workspace（ローカル設定 / 一時メタデータ）
 /.claude/
+
+# Secrets / 環境変数（ハーネス: 絶対にコミットしない。CI は GitHub Secrets を使う）
+.env
+.env.*
+*.env
+secrets.*
+

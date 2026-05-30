@@ -1,5 +1,7 @@
 # 月と珈琲 (tokimemo)
 
+[![CI](https://github.com/ranranru482/tokimemo/actions/workflows/ci.yml/badge.svg)](https://github.com/ranranru482/tokimemo/actions/workflows/ci.yml)
+
 社会人 1 年生として 1 年間を生き、5 人のキャラクターと出会い、自分なりの結末にたどり着く Flutter 製のオリジナル恋愛シミュレーション。
 
 > 既存 IP（ときめきメモリアル等）の固有名詞・台詞は一切使用していない完全オリジナル作品。社会人らしい抑制の効いた大人びたトーンで統一。
@@ -61,6 +63,14 @@
 1. **Planner**: `docs/spec.md` を読み、機能とスプリントを定義する。
 2. **Generator**: スプリントを 1 つずつ実装し、自己評価する。
 3. **Evaluator**: 実装結果をテスト・実機で検証し、合否を判定する。
+
+### 半自動開発ハーネス
+
+ChatGPT → Claude Code → GitHub Actions(CI) → Codex Review → Claude 報告 → ChatGPT 次指示、の流れで開発を回す。
+
+- **CI** (`.github/workflows/ci.yml`): PR / feature branch push で `flutter pub get → analyze → test` を実行（Flutter 3.38.9 stable 固定）。
+- **Codex Review** (`.github/workflows/codex-review.yml`): PR 差分をレビューしコメント投稿（コメントのみ・auto-merge/push なし・`secrets.OPENAI_API_KEY` 使用）。
+- **運用ルール**: main 直コミット禁止 / feature branch 必須 / CI green 必須 / Codex Review green 必須。詳細は [`docs/CLAUDE_RUNBOOK.md`](docs/CLAUDE_RUNBOOK.md)、次タスクは [`docs/NEXT_TASK.md`](docs/NEXT_TASK.md)、雛形は [`docs/SPRINT_TEMPLATE.md`](docs/SPRINT_TEMPLATE.md)。
 
 各スプリント完了時に `docs/progress.md` の末尾に追記する。実装の方針として:
 
