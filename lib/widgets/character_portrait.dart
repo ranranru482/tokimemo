@@ -9,12 +9,13 @@ import '../models/character.dart';
 /// - 中央にキャラ名のイニシャル（1文字）
 /// - 右下に表情アイコン（Icons.sentiment_*）を重ねる
 ///
-/// 将来拡張ポイント:
-/// 実イラストに置き換える場合は [Character] に `assetPathFor(Expression)` のような
-/// メソッドを追加し、本 Widget で `Image.asset(character.assetPathFor(expression))`
-/// に切り替えるだけで差し替え可能な構造にしてある。
-/// 表情 enum はそのままアセットファイル名のサフィックスに使える命名
-/// （`normal / smile / troubled`）。
+/// 実イラスト対応（実装済み）:
+/// 非シルエット時は [assetPathForExpression] が返す
+/// `assets/characters/<id>_<expression>.png` を `Image.asset` で円形に描画する。
+/// 未投入 / 欠損時は `errorBuilder` でイニシャル円のプレースホルダへ自動フォールバック
+/// するため、部分投入でもクラッシュしない。未会いシルエット表示時は実画像を
+/// 読み込まず従来描画を維持する（未会いキャラの絵が漏れない）。
+/// 表情 enum 名（`normal / smile / troubled`）がそのままファイル名サフィックス。
 class CharacterPortrait extends StatelessWidget {
   const CharacterPortrait({
     super.key,
@@ -72,6 +73,7 @@ class CharacterPortrait extends StatelessWidget {
           Container(
             width: size,
             height: size,
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: bg,
               shape: BoxShape.circle,
@@ -83,16 +85,19 @@ class CharacterPortrait extends StatelessWidget {
                 ),
               ],
             ),
-            child: Center(
-              child: Text(
-                initialChar,
-                style: TextStyle(
-                  fontSize: size * 0.45,
-                  color: fg,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+            // 実立ち絵があれば円形にクリップして表示。未投入 / 欠損時は
+            // errorBuilder で従来のイニシャル描画へフォールバックする
+            // （部分投入でもクラッシュしない）。未会いシルエット表示時は
+            // 実画像を読み込まず（漏らさず）従来描画を維持する。
+            child: isSilhouette
+                ? _initialLabel(initialChar, fg)
+                : Image.asset(
+                    assetPathForExpression(character, expression),
+                    fit: BoxFit.cover,
+                    gaplessPlayback: true,
+                    errorBuilder: (context, error, stackTrace) =>
+                        _initialLabel(initialChar, fg),
+                  ),
           ),
           if (!isSilhouette)
             Positioned(
@@ -132,6 +137,30 @@ class CharacterPortrait extends StatelessWidget {
       ),
     );
   }
+
+  /// イニシャル 1 文字のフォールバック描画（実画像が無い / 欠損 / シルエット時）。
+  Widget _initialLabel(String initialChar, Color fg) => Center(
+        child: Text(
+          initialChar,
+          style: TextStyle(
+            fontSize: size * 0.45,
+            color: fg,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+
+  /// 立ち絵アセットのパス。
+  ///
+  /// 命名規約: `assets/characters/<id>_<expression>.png`。
+  /// `<id>` は [CharacterId] の name（akari/uta/toru/sayo/yui）、
+  /// `<expression>` は [Expression] の name（normal/smile/troubled）。
+  /// 例: 灯の笑顔 → `assets/characters/akari_smile.png`。
+  static String assetPathForExpression(
+    Character character,
+    Expression expression,
+  ) =>
+      'assets/characters/${character.id.name}_${expression.name}.png';
 
   /// 表情 enum → Material アイコンの単純マッピング。
   /// 実イラスト導入後はこのメソッドは不要になる（または使われ続ける）。
