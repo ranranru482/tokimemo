@@ -68,11 +68,13 @@ flutter:
 
   # 実アセット投入時に該当行のコメントを解除する。
   # 詳細は docs/assets_spec.md / docs/asset_checklist.md を参照。
-  # assets:
+  assets:
+    # 背景 16（png）: feat/background-assets で有効化。実画像未投入でも
+    # ScenicBackground の errorBuilder がグラデーションへフォールバックする。
+    - assets/backgrounds/
   #   - assets/audio/        # BGM 6 / SE 8（mp3）
   #   - assets/characters/   # 立ち絵 15（png 透過）
   #   - assets/cg/           # CG 65（png）
-  #   - assets/backgrounds/  # 背景 16（png）
   #   - assets/ui/           # UI 補助素材（任意）
 
   # An image asset can refer to one or more resolution-specific "variants", see

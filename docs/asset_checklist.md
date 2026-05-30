@@ -255,28 +255,29 @@ BGM と同一の `assets/audio/` ディレクトリを共有するため、pubsp
 
 #### 背景 部分投入 / 仮素材差替えの最小手順
 
-⚠️ **音声と性質が異なる。** `ScenicBackground` は現状 `LinearGradient` のみで描画し、
-`Image.asset` を一切呼んでいない（差替えポイントはコメントで予約済みだが未実装）。
-そのため「背景素材が無い／一部だけ」の状態でも **実行時依存はゼロ＝クラッシュしない**
-（音声のような try/catch 握りつぶしは不要、そもそも参照していない）。
+✅ **`Image.asset` 化 + `errorBuilder` フォールバック実装済み（feat/background-assets）。**
+`pubspec.yaml` の `- assets/backgrounds/` は **有効化済み**。`ScenicBackground` は
+`assets/backgrounds/<season>_<phase>.png` を `Image.asset` で描画し、未投入 / 欠損時は
+`errorBuilder` で従来のグラデーション背景へ自動フォールバックする。
+そのため **画像が無い／一部だけの状態でもクラッシュしない**。投入はファイルを置くだけ。
 
 1. `assets/backgrounds/` に投入できる分だけ `<season>_<noon|...>.png` を配置（残りは未配置で可）。
-2. `pubspec.yaml` の `flutter.assets:` の `- assets/backgrounds/` 行を解除。
-   - 現状ディレクトリには `.gitkeep` / `README.md` のみ存在するため非空。空でない限り
-     `flutter pub get` / build は **エラーにならない**（無関係ファイルがバンドルされるだけ）。
-3. `flutter pub get` を実行。**この段階では背景はグラデーションのままで画像は出ない**
-   （コードがまだ `Image.asset` を呼んでいないため。pubspec 解除だけでは描画は変わらない）。
-4. 実画像を反映するには `lib/widgets/scenic_background.dart` の差替えが必要（下記）。
-   このとき **必ず `errorBuilder`（または `frameBuilder`）でグラデーションへフォールバック**
-   させること。音声と違い背景には欠損ガードが無いため、未投入ファイルを直接 `Image.asset`
-   すると当該背景が例外/灰色になる。フォールバックを付ければ部分投入でも安全。
-5. 仮素材を差し替えるときはファイル名そのままで上書きすれば、次回起動から反映される。
+2. `flutter pub get` を実行（`pubspec` は有効化済みなので追加編集は不要）。
+3. アプリを再起動 → 投入済みの季節/時間帯は実画像、未投入分はグラデーションで表示される。
+4. 仮素材を差し替えるときはファイル名そのままで上書きすれば、次回起動から反映される。Dart 変更不要。
 
-#### 背景の差替えポイント（コード側）
+> 注: ディレクトリは `.gitkeep` / `README.md` を含み非空なので、画像 0 件でも
+> `flutter pub get` / build はエラーにならない。
 
-`lib/widgets/scenic_background.dart` の `build` 内 `AnimatedContainer`（`LinearGradient`）を
-`Image.asset('assets/backgrounds/${palette.season.name}_${palette.timeOfDay.name}.png', fit: BoxFit.cover, errorBuilder: グラデーション)` に置換する。
-色決定関数 `_topColorFor` / `_midColorFor` / `_bottomColorFor` はフォールバック用に残す。
+#### 背景の差替えポイント（コード側・実装済み）
+
+`lib/widgets/scenic_background.dart` の `build` は
+`Image.asset(ScenicBackground.assetPathForPalette(palette), fit: BoxFit.cover, gaplessPlayback: true, errorBuilder: _GradientBackdrop)`
+を `AnimatedSwitcher` でラップして描画する。
+- パス生成は静的メソッド `ScenicBackground.assetPathForPalette(palette)`（テスト対象）。
+- フォールバックは private `_GradientBackdrop`。色決定関数 `_topColorFor` / `_midColorFor` /
+  `_bottomColorFor` はフォールバック用に維持。
+- 季節/時間帯キー `scenicBackground.<season>.<phase>` は維持（既存テスト互換）。
 
 #### 背景投入時の検証ポイント
 
