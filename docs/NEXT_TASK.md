@@ -27,7 +27,7 @@
 
 - ChatGPT: 立ち絵15件（`<id>_<expression>.png`、akari/uta/toru/sayo/yui × normal/smile/troubled、透過 PNG 1024×1536 推奨）を生成し、ZIP 等で提供。
 - Claude Code 担当（ZIP 受領後）:
-  - [ ] ZIP を展開し、ファイル名が命名規約（`<id>_<expression>.png`）と一致するか検証（過不足・解像度・透過）。
+  - [ ] ZIP を展開し、`python tools/verify_character_assets.py` で検証（命名規約 `<id>_<expression>.png` 過不足 / PNG署名 / 解像度 / 透過）。exit 0 を確認。
   - [ ] 15件を `assets/characters/` に配置（README.txt 等は除外、既存 README.md は保持）。
   - [ ] `pubspec.yaml` の `- assets/characters/` は**有効化済み**（追加編集不要）。
   - [ ] `flutter pub get` → `flutter analyze`（clean）→ `flutter test`（445 維持）。
