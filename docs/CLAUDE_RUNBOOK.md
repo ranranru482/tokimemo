@@ -58,6 +58,49 @@ flutter test           # 全 pass（件数を記録。現基準 435）
   - 初回除外: `integration_test/`（実機必須）、`dart format`（既存未フォーマットのため）。
 - **Codex Review**: `pull_request` トリガ、`pull_request_target` 不使用、権限 `contents:read` + `pull-requests:write`、`secrets.OPENAI_API_KEY` 使用、差分は 120KB で打ち切り。
 
+### main ブランチ保護（2026-05-30 設定済み・ai_keiba 運用レベル）
+
+| 項目 | 値 |
+| --- | --- |
+| 必須ステータスチェック | `analyze + test` / `codex review (comment only)`（strict=最新化必須） |
+| PR レビュー | 必須（承認数 0 = ソロ運用で自己マージ可、stale 承認は破棄） |
+| enforce_admins | **true**（管理者も直 push 不可。main は PR 経由のみ） |
+| force push / 削除 | 禁止 |
+| 会話解決 | マージ前に必須 |
+
+→ 「main 直コミット禁止 / CI green 必須 / Codex green 必須」が技術的に強制された状態。
+
+### Codex Review の 2 モード
+
+Codex Review workflow は `OPENAI_API_KEY`（repo secrets）の有無で挙動が変わる。**どちらも CI ステータスは green**（必須チェックを満たす）。
+
+| | OPENAI_API_KEY **未設定** | OPENAI_API_KEY **設定済み** |
+| --- | --- | --- |
+| guard ステップ | `has_key=false` を出力し `::notice` | `has_key=true` |
+| 以降のステップ | すべて **skip** | 実行（diff 収集 → Codex API → PR コメント投稿） |
+| PR コメント | **投稿されない** | `## 🤖 Codex Review` で投稿 |
+| ジョブ結論 | success（green） | success（API/レート異常時は warning 付きでコメント、ジョブは green 維持） |
+| 意味 | fork PR・キー未登録でもハード失敗しない安全動作 | 実レビュー稼働。指摘は人間が判断（auto-merge/push しない） |
+
+- **未設定 → 設定済みへの移行**: GitHub の Settings → Secrets and variables → Actions に `OPENAI_API_KEY` を追加するだけ。次回 PR の `synchronize`/`opened` から実レビューが走る。Dart 側・workflow 側の変更は不要。
+- 設定済みで初回実行時は、モデル名（`gpt-5-codex`）と Responses API のレスポンス形状が想定どおりかをコメント出力で確認し、ズレていれば workflow の該当箇所のみ微調整する。
+
+---
+
+## アセット運用方針（画像生成と実装の分担）
+
+実アセット（背景 / キャラ立ち絵 / CG など）の **画像生成は ChatGPT 側が担当する**。
+**Claude Code は画像生成を行わない。** Claude は実装と検証に専念する。
+
+| 担当 | 作業 |
+| --- | --- |
+| **ChatGPT** | 背景・キャラ絵・CG など実画像の生成、命名規約に沿ったファイル提供 |
+| **Claude Code** | `docs/asset_checklist.md` 管理 / `assets/` への配置 / `pubspec.yaml` の assets 有効化 / `Image.asset` への差し替え / `errorBuilder` フォールバック実装 / `flutter analyze` / `flutter test` / integration test / commit / PR / マージ準備 |
+
+- 実画像が未提供の段階では Claude は「投入準備の検証」（プレースホルダ維持・フォールバック実装・手順整備）までを行い、生成を肩代わりしない。
+- 画像差し替え時は必ず `errorBuilder`（または同等のフォールバック）で従来のプレースホルダ描画に戻せるようにし、部分投入でもクラッシュさせない。
+- 命名規約・推奨仕様は `docs/asset_checklist.md` / `docs/assets_spec.md` を単一ソースとする（背景の時間帯は `noon` 表記、`day` ではない）。
+
 ---
 
 ## 報告フォーマット（毎回これで返す）
