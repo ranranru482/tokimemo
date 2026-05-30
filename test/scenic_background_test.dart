@@ -94,6 +94,65 @@ void main() {
     expect(spring.midColor, isNot(winter.midColor));
   });
 
+  group('assetPathForPalette: 命名規約', () {
+    String pathFor(DateTime date, SlotIndex? slot) =>
+        ScenicBackground.assetPathForPalette(
+          ScenicBackground.resolvePalette(date, slot),
+        );
+
+    test('春の日中 → spring_noon.png', () {
+      expect(
+        pathFor(DateTime(2026, 4, 1), SlotIndex.midday),
+        'assets/backgrounds/spring_noon.png',
+      );
+    });
+    test('冬の夜 → winter_night.png', () {
+      expect(
+        pathFor(DateTime(2027, 1, 1), SlotIndex.night),
+        'assets/backgrounds/winter_night.png',
+      );
+    });
+    test('夏の朝 → summer_morning.png', () {
+      expect(
+        pathFor(DateTime(2026, 7, 1), SlotIndex.morning),
+        'assets/backgrounds/summer_morning.png',
+      );
+    });
+    test('秋の夕方 → autumn_evening.png', () {
+      expect(
+        pathFor(DateTime(2026, 10, 1), SlotIndex.evening),
+        'assets/backgrounds/autumn_evening.png',
+      );
+    });
+    test('phase は noon 表記（day ではない）', () {
+      final path = pathFor(DateTime(2026, 4, 1), SlotIndex.midday);
+      expect(path.contains('_noon.png'), isTrue);
+      expect(path.contains('_day.png'), isFalse);
+    });
+  });
+
+  testWidgets('背景画像が未投入でもフォールバックしてクラッシュしない', (tester) async {
+    // テスト環境にはアセットが無い → Image.asset は errorBuilder へ落ち、
+    // グラデーション背景が描かれる。例外で落ちないことを確認する。
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ScenicBackground(
+            currentDate: DateTime(2026, 4, 1),
+            progressSlot: SlotIndex.midday,
+            transition: Duration.zero,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('scenicBackground.spring.noon')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('ScenicBackground は時間帯ごとのキーで識別できる', (tester) async {
     Widget build(SlotIndex slot) => MaterialApp(
           home: Scaffold(

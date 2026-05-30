@@ -40,22 +40,36 @@ class ScenicBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = resolvePalette(currentDate, progressSlot);
-    return AnimatedContainer(
-      key: ValueKey('scenicBackground.${palette.season.name}.${palette.timeOfDay.name}'),
+    // 季節/時間帯ごとに識別キーを振る。キーが変わると AnimatedSwitcher が
+    // 新旧をクロスフェードする。テストはこのキーで対象を特定する。
+    final id = ValueKey(
+      'scenicBackground.${palette.season.name}.${palette.timeOfDay.name}',
+    );
+    return AnimatedSwitcher(
       duration: transition,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: <Color>[
-            palette.topColor,
-            palette.midColor,
-            palette.bottomColor,
-          ],
+      child: SizedBox.expand(
+        key: id,
+        // 実背景画像があれば描画。未投入 / 欠損時は errorBuilder で従来の
+        // グラデーション背景へフォールバックする（部分投入でもクラッシュしない）。
+        child: Image.asset(
+          assetPathForPalette(palette),
+          fit: BoxFit.cover,
+          gaplessPlayback: true,
+          errorBuilder: (context, error, stackTrace) =>
+              _GradientBackdrop(palette: palette),
         ),
       ),
     );
   }
+
+  /// パレットに対応する背景アセットのパス。
+  ///
+  /// 命名規約: `assets/backgrounds/<season>_<phase>.png`。
+  /// `season` は [Season] の name（spring/summer/autumn/winter）、
+  /// `phase` は [DayPhase] の name（morning/noon/evening/night）。
+  /// 例: 春の日中 → `assets/backgrounds/spring_noon.png`。
+  static String assetPathForPalette(ScenicPalette palette) =>
+      'assets/backgrounds/${palette.season.name}_${palette.timeOfDay.name}.png';
 
   /// 月 + スロットからパレットを純粋関数で算出する（テスト対象）。
   static ScenicPalette resolvePalette(DateTime date, SlotIndex? slot) {
@@ -180,5 +194,32 @@ Color _bottomColorFor(DayPhase tod, Season season) {
       return const Color(0xFF6A4980); // 紫
     case DayPhase.night:
       return const Color(0xFF050811); // 黒寄り
+  }
+}
+
+/// 実背景画像が無い / 読み込めないときのフォールバック描画。
+///
+/// 従来の `ScenicBackground` と同一の季節×時間帯グラデーションを描く。
+/// 実画像投入前・部分投入・読み込み失敗のいずれでもこの描画に落ちる。
+class _GradientBackdrop extends StatelessWidget {
+  const _GradientBackdrop({required this.palette});
+
+  final ScenicPalette palette;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[
+            palette.topColor,
+            palette.midColor,
+            palette.bottomColor,
+          ],
+        ),
+      ),
+    );
   }
 }
