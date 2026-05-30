@@ -27,11 +27,11 @@ void main() {
       expect(byId(CharacterId.yui).displayName, '槙原 結衣');
     });
 
-    test('spec.md §5 の年齢が定義されている', () {
-      expect(CharacterRepository.byId(CharacterId.akari).age, 30);
-      expect(CharacterRepository.byId(CharacterId.uta).age, 28);
+    test('社会人版設定の年齢が定義されている（docs/character_profiles.md）', () {
+      expect(CharacterRepository.byId(CharacterId.akari).age, 25);
+      expect(CharacterRepository.byId(CharacterId.uta).age, 27);
       expect(CharacterRepository.byId(CharacterId.toru).age, 26);
-      expect(CharacterRepository.byId(CharacterId.sayo).age, 34);
+      expect(CharacterRepository.byId(CharacterId.sayo).age, 28);
       expect(CharacterRepository.byId(CharacterId.yui).age, 24);
     });
 
