@@ -241,12 +241,17 @@ BGM と同一の `assets/audio/` ディレクトリを共有するため、pubsp
 
 ## 4. 背景（assets/backgrounds/） — 16 ファイル
 
+> 🟡 **2026-05-30: 仮素材（プレースホルダ）16 枚を投入済み**（`feat/background-assets-placeholder`）。
+> 全て 1920×1080 PNG。本番背景が用意でき次第、**同じファイル名で上書き**すれば Dart 変更なしで
+> 差し替わる。仮素材はファイルサイズが ~1.6–2.5MB/枚と推奨（~400KB）より大きいため、本番では
+> WebP 化 / 圧縮で削減すること。チェックは「投入済み」を意味し、本番品質確定ではない。
+
 | | morning | noon | evening | night |
 | --- | :-: | :-: | :-: | :-: |
-| spring | [ ] `spring_morning.png` | [ ] `spring_noon.png` | [ ] `spring_evening.png` | [ ] `spring_night.png` |
-| summer | [ ] `summer_morning.png` | [ ] `summer_noon.png` | [ ] `summer_evening.png` | [ ] `summer_night.png` |
-| autumn | [ ] `autumn_morning.png` | [ ] `autumn_noon.png` | [ ] `autumn_evening.png` | [ ] `autumn_night.png` |
-| winter | [ ] `winter_morning.png` | [ ] `winter_noon.png` | [ ] `winter_evening.png` | [ ] `winter_night.png` |
+| spring | [x] `spring_morning.png` | [x] `spring_noon.png` | [x] `spring_evening.png` | [x] `spring_night.png` |
+| summer | [x] `summer_morning.png` | [x] `summer_noon.png` | [x] `summer_evening.png` | [x] `summer_night.png` |
+| autumn | [x] `autumn_morning.png` | [x] `autumn_noon.png` | [x] `autumn_evening.png` | [x] `autumn_night.png` |
+| winter | [x] `winter_morning.png` | [x] `winter_noon.png` | [x] `winter_evening.png` | [x] `winter_night.png` |
 
 > ⚠️ **時間帯トークンは `noon`（昼）であって `day` ではない。** ファイル名は
 > `DayPhase.name`（`morning | noon | evening | night`）に一致させる必要がある

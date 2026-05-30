@@ -60,3 +60,6 @@ app.*.map.json
 *.env
 secrets.*
 
+# アセット受領 ZIP（展開後の中身のみ管理。ZIP 本体はコミットしない）
+/*.zip
+
