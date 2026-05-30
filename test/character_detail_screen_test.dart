@@ -41,8 +41,8 @@ void main() {
     final roleText = tester.widget<Text>(
       find.byKey(const ValueKey('characterDetail.akari.role')),
     );
-    expect(roleText.data, contains('30歳'));
-    expect(roleText.data, contains('マーケティング'));
+    expect(roleText.data, contains('25歳'));
+    expect(roleText.data, contains('カフェ研究員'));
 
     // bioShort と bioLong
     expect(
